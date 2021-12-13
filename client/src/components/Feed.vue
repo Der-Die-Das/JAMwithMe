@@ -1,26 +1,16 @@
-<!DOCTYPE html>
-<html lang="de">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>test InstagramDesign</title>
-</head>
-
-<body>
-    <header>
+<template>
+<div>
         <div class="headerTop">
             <div class="headerTopLogo">
-                <img src="./assets/Logo.png" alt="Logo">
+                <img src="../assets/logo.png" alt="Logo">
             </div>
             <div class="headerTopIcons">
                 <i class="far fa-heart"></i>
-                <a href="#"><img src="https://picsum.photos/80" alt=""></a>
+
+                <a href="#"><img src="../assets/ProfilePicture.jpeg" alt=""></a>
             </div>
         </div>
-    </header>
-    <section>
+
         <div class="posts">
             <div class="post">
                 <div class="postHeader">
@@ -43,7 +33,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -57,7 +47,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -84,7 +74,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -98,7 +88,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -125,7 +115,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -139,7 +129,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -166,7 +156,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -180,7 +170,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -207,7 +197,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -221,7 +211,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -248,7 +238,7 @@
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -262,7 +252,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -272,7 +262,7 @@
                 <div class="postHeader">
                     <div class="postUser">
                         <div class="postUserPic">
-                            <img src="https://picsum.photos/80" alt="ProfilePicture">
+                            <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                         </div>
                         <div class="postUserName"> Testbenutzer</div>
                     </div>
@@ -283,13 +273,13 @@
 
 
                 <div class="postContent">
-                    <img src="./assets/rock.jpeg" alt="PostImg">
+                    <img src="../assets/rock.jpeg" alt="PostImg">
                 </div>
                 <div class="postIcons">
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -303,7 +293,7 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
@@ -313,7 +303,7 @@
                 <div class="postHeader">
                     <div class="postUser">
                         <div class="postUserPic">
-                            <img src="https://picsum.photos/80" alt="ProfilePicture">
+                            <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                         </div>
                         <div class="postUserName"> Testbenutzer</div>
                     </div>
@@ -324,13 +314,13 @@
 
 
                 <div class="postContent">
-                    <img src="./assets/electroinic.png" alt="PostImg">
+                    <img src="../assets/electroinic.png" alt="PostImg">
                 </div>
                 <div class="postIcons">
                     <i class="far fa-heart"></i>
                     <i class="far fa-comment"></i>
                     <i class="far fa-paper-plane"></i>
-                    <div class="directJam"><a href="#"> <img src="./assets/icon.jpg" alt="jam"></a></div>
+                    <div class="directJam"><a href="#"> <img src="../assets/icon.jpg" alt="jam"></a></div>
                 
                 </div>  
                 <div class="likeCounter">
@@ -344,27 +334,34 @@
                 </div>
                 <div class="postComment">
                     <div class="postUserPic">
-                        <img src="https://picsum.photos/80" alt="ProfilePicture">
+                        <img src="../assets/ProfilePicture.jpeg" alt="ProfilePicture">
                     </div>
                     <span class="postCommentText"> Add comment...</span>
                 </div>
 
             </div>
-
 
 
 
         </div>
-    </section>
     <footer>
         <a href="#"><i class="fas fa-home"></i></a>
         <a href="#"><i class="fas fa-search"></i></a>
-        <a href="#"><img src="./assets/icon.jpg" alt=""></i></a>
+        <a href="#"><img src="../assets/icon.jpg" alt=""></a>
     </footer>
-    <script src="https://kit.fontawesome.com/dd69168b8b.js" crossorigin="anonymous"></script>
-</body>
+</div>
+</template>
 
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  }
+}
+</script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
 
-
-</html>
+</style>

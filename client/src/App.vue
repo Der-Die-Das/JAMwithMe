@@ -1,5 +1,6 @@
 <template>
   <Feed />
+  
 </template>
 
 <script>
@@ -10,6 +11,7 @@ export default {
   name: 'App',
   components: {
     Feed
+
   }
 }
 
@@ -20,6 +22,9 @@ export default {
   font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+
+
 }
 
 
@@ -64,12 +69,15 @@ header {
 }
 .headerTopIcons i {
     margin: 0px 8px;
+    align-content: center;
 }
 .headerTopIcons img {
-    width: 25px;
-    height: 25px;
+    display: block;
+    margin: auto;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: -10px;
 }
 .posts{
     margin-bottom: 60px;
@@ -117,10 +125,11 @@ header {
 }
 
 .postIcons i {
-    margin: 0px 5px;
+    margin: 0px 10px;
+
 }
 .postIcons i:first-child {
-    margin: 0px 5px 0px 0px;
+    margin-left: 0px ;
 }
 
 .postIcons img {
@@ -173,7 +182,8 @@ footer img {
     border-radius: 50%;
     margin-right: 8px;
 }
-.postCommentText {
-    color: gray;
+.postCommentText{
+border: none;
+width: 240px;
 }
 </style>

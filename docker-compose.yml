@@ -1,0 +1,41 @@
+version: '3'
+services:
+  db:
+    build: server/database
+    hostname: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jamwithme
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # - ./server/database/create-script.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  app:
+    build: server
+    depends_on:
+      # Our app does not work without our database
+      # so this ensures our database is loaded first
+      - db
+    ports:
+      - "3000:3000"
+    # volumes:
+      # Maps our current project directory `.` to
+      # our working directory in the container
+      # - ./:/usr/src/app/
+      # node_modules workaround for volumes
+      # https://stackoverflow.com/a/32785014
+      # - /usr/src/app/node_modules
+  admin:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8081:8080
+
+volumes:
+  postgres-data: 

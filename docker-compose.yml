@@ -14,7 +14,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       # - ./server/database/create-script.sql:/docker-entrypoint-initdb.d/create_tables.sql
 
-  app:
+  server:
     build: server
     depends_on:
       # Our app does not work without our database

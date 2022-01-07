@@ -132,7 +132,7 @@
     <footer>
       <a href="#"><font-awesome-icon icon="home" /> </a>
       <a href="#"><font-awesome-icon icon="search" /> </a>
-      <a href="#"><img src="../assets/icon.jpg" alt="" /></a>
+      <router-link to="/Jam"><img src="../assets/icon.jpg" alt="" /></router-link>
     </footer>
   </div>
 </template>

@@ -29,10 +29,10 @@ services:
       # node_modules workaround for volumes
       # https://stackoverflow.com/a/32785014
       # - /usr/src/app/node_modules
-  client:
-    build: client
-    ports:
-    - "80:80"
+#  client:
+#     build: client
+#     ports:
+#     - "80:80"
   admin:
     image: adminer
     restart: always

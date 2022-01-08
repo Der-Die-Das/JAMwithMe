@@ -1,11 +1,12 @@
 <template>
   <div class="app">
     <footer>
-      <router-link class="nav" to="/Feed"><font-awesome-icon icon="home" /></router-link>
-      <router-link class="nav" to="/Search"
+      <span><router-link class="nav" to="/Feed"><font-awesome-icon icon="home" /></router-link></span>
+      <span><router-link class="nav" to="/Search"
         ><font-awesome-icon icon="search"
-      /></router-link>
-      <router-link to="/Jam"><img src="./assets/icon.jpg" alt="jam" /></router-link>
+      /></router-link></span>
+      <span><router-link to="/Jam"><img src="./assets/icon.jpg" alt="jam" /></router-link></span>
+      
     </footer>
     <main role="main">
       <router-view />
@@ -106,6 +107,14 @@ header {
   max-width: 100%;
   max-height: 500px;
   overflow: hidden;
+  margin-bottom: -20px;
+}
+.postContentControl {
+  display: flex;
+  position: relative;
+  bottom: 35px;
+  left: 17px;
+  z-index: 95;
 }
 .postContent img {
   height: 200px;
@@ -151,23 +160,32 @@ header {
   color: rgb(62, 62, 201);
 }
 footer {
-  padding: 14px;
+  padding: 20px;
   display: flex;
   justify-content: space-evenly;
   position: fixed;
-  inset: auto 0 0 0;
+  inset: auto auto 0 auto;
   width: 100%;
   background: #fff;
   z-index: 100;
 }
 .nav {
   color: #333;
+  align-items: center;
+
 }
 footer img {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   margin-top: -8px;
 }
+
+footer span {
+width: 32px;
+text-align: center;
+}
+
+
 .postComment {
   display: flex;
   align-items: center;
@@ -184,6 +202,61 @@ footer img {
 .postCommentText {
   border: none;
   width: 240px;
+}
+.postTime {
+  color: white;
+      position: absolute;
+    left: 80%;
+  font-weight: 800;
+  font-size: 8px;
+    margin-top: 6px;
+    width: 6%;
+    text-align: end;
+    white-space:nowrap;
+}
+.imgSlidecontainer {
+  width: 75%;
+  height: 25px;
+}
+
+/* The slider itself */
+.imgSlider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  display: inline;
+  position: absolute;
+  left: 25%;
+  transform: translateX(-25%);
+  width: 70%; /* Full-width */
+  height: 2px; /* Specified height */
+  background: #ffffff; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 1; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+  margin-top: 9px;
+}
+
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.imgSlider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 8px; /* Set a specific slider handle width */
+  height: 8px; /* Slider handle height */
+  background: #ffffff; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 50%;
+
+}
+
+.imgSlider::-moz-range-thumb {
+  width: 40px; /* Set a specific slider handle width */
+  height: 40px; /* Slider handle height */
+  background: #000000; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 50%;
+    padding: 20px;
 }
 
 .slidecontainer {
@@ -364,14 +437,13 @@ padding-bottom: 18px;
   display: flex;
   justify-content: space-evenly;
   position: fixed;
-  inset: auto auto 40px auto;
+  inset: auto auto 60px auto;
   z-index: 99;
-
   width: 100%;
   background: #fff;
 }
 .newRecord img {
-  width: 30px;
+  width: 32px;
 }
 
 .postSettingName {
@@ -381,28 +453,9 @@ padding-bottom: 18px;
 }
 .postSettingContent {
   margin-left: 15px;
+  margin-right: 15px;
 }
 
-.postSettingContentHeader {
-  font-size: 14px;
-  margin-bottom: 2px;
-}
-
-.postSettingContent:last-child {
-  font-size: 14px;
-  margin-top: 40px;
-  margin-bottom: 2px;
-}
-
-.postSettingContentHeader img {
-  width: 20px;
-  margin: auto;
-  display: block;
-  margin-top: -20px;
-}
-textarea {
-  height: 40px;
-}
 
 .postSettingText {
   border: none;

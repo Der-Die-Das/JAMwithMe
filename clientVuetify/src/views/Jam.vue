@@ -40,7 +40,6 @@
                 />
               </span>
               <span class="recordingSettingStartValue">00:12</span>
-
               <span class="recordingSettingEndValue">03:02</span>
             </div>
             <div class="recordingTimeControl">
@@ -113,9 +112,13 @@
 
     <div class="recordings"></div>
     <div class="newRecord">
-      <img src="../assets/folder-regular.svg" alt="" />
+      <font-awesome-icon
+                :icon="['far', 'folder']"
+                style="color: black"
+                size="2x"
+              />
       <img src="../assets/record.svg" alt="" />
-      <img src="../assets/upload.svg" alt="" />
+      <img src="../assets/upload.svg" alt="">
     </div>
   </div>
 </template>

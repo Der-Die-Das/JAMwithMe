@@ -13,7 +13,11 @@
               size="lg" /></a
         ></i>
         <i>
-           <router-link to="/Profile"><img src="https://picsum.photos/99" alt="ProfilePicture" /></router-link>
+           <router-link to="/Profile">
+
+<img src="https://picsum.photos/99" alt="ProfilePicture" />
+
+           </router-link>
         </i>
       </div>
     </div>
@@ -32,6 +36,19 @@
 
         <div class="postContent">
           <img src="https://picsum.photos/800/401" alt="PostImg" />
+          <div class="postContentControl">
+                          <span><font-awesome-icon icon="pause" color="white" size="sm" /></span>
+              <span class="imgSlidecontainer">
+                <input
+                  type="range"
+                  min="1"
+                  max="100"
+                  value="0"
+                  class="imgSlider"
+                />
+              </span>
+              <span class="postTime">00:11 / 03:02</span>
+          </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']"/> </i>
@@ -71,6 +88,19 @@
 
         <div class="postContent">
           <img src="https://picsum.photos/800/402" alt="PostImg" />
+          <div class="postContentControl">
+                          <span><font-awesome-icon icon="pause" color="white" size="sm" /></span>
+              <span class="imgSlidecontainer">
+                <input
+                  type="range"
+                  min="1"
+                  max="100"
+                  value="0"
+                  class="imgSlider"
+                />
+              </span>
+              <span class="postTime">00:11 / 03:02</span>
+          </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']"/> </i>
@@ -111,6 +141,19 @@
 
         <div class="postContent">
           <img src="https://picsum.photos/800/403" alt="PostImg" />
+          <div class="postContentControl">
+                          <span><font-awesome-icon icon="pause" color="white" size="sm" /></span>
+              <span class="imgSlidecontainer">
+                <input
+                  type="range"
+                  min="1"
+                  max="100"
+                  value="0"
+                  class="imgSlider"
+                />
+              </span>
+              <span class="postTime">00:11 / 03:02</span>
+          </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']"/> </i>

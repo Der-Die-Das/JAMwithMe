@@ -5,8 +5,8 @@ import router from './router'
 
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faSearch, faEllipsisH, faUpload, faUndo} from '@fortawesome/free-solid-svg-icons'
-import { faComment,faHeart, faPaperPlane,faPauseCircle, faPlayCircle } from '@fortawesome/free-regular-svg-icons'
+import { faHome, faSearch, faEllipsisH, faUpload, faUndo, faRecordVinyl, faPause, faPlay} from '@fortawesome/free-solid-svg-icons'
+import { faComment,faHeart, faPaperPlane,faPauseCircle, faPlayCircle, faFolder, faImage } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(
@@ -19,8 +19,13 @@ library.add(
   faUpload,
   faPauseCircle,
   faPlayCircle,
-  faUndo
-)
+  faPause,
+  faPlay,
+  faUndo,
+  faFolder,
+  faRecordVinyl,
+  faImage
+  )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

@@ -1,0 +1,94 @@
+<template>
+  <div>
+    <div class="headerTop">
+      <div class="headerTopLogo">
+        <img src="../assets/logo.png" alt="Logo" />
+      </div>
+      <div class="headerTopIcons">
+        <i
+          ><a href="#"
+            ><font-awesome-icon
+              :icon="['far', 'heart']"
+              style="color: black"
+              size="lg" /></a
+        ></i>
+        <i>
+          <router-link to="/Profile"
+            ><img src="https://picsum.photos/99" alt="ProfilePicture"
+          /></router-link>
+        </i>
+      </div>
+    </div>
+    <div class="recordingName">new Recording</div>
+    <v-expansion-panels class="recordings">
+      <v-expansion-panel v-model="panel" v-for="(item, i) in 5" :key="i">
+        <v-expansion-panel-header>
+          <span class="recordingContentHeader">RecordingXX</span>
+        </v-expansion-panel-header>
+
+        <v-expansion-panel-content class="recording">
+          <div class="recordingContent">
+            <div class="recordingTime">
+              <v-slider v-model="media" label="Time"> </v-slider>
+            </div>
+            <span class="recordingSettingStartValue">00:12</span>
+            <span class="recordingSettingEndValue">03:02</span>
+            <div class="recordingTimeControl">
+              <span><font-awesome-icon icon="undo" /></span>
+              <span
+                ><font-awesome-icon
+                  :icon="['far', 'pause-circle']"
+                  style="color: black"
+                  size="lg"
+              /></span>
+              <span><font-awesome-icon icon="undo" flip="horizontal" /></span>
+            </div>
+
+            <div class="recordingVol">
+               <v-slider v-model="media" label="Vol"> </v-slider>
+            </div>
+            <div class="recordingBass">
+               <v-slider v-model="media" label="Bass"> </v-slider>
+            </div>
+            <div class="recordingTreble">
+               <v-slider v-model="media" label="Treble"> </v-slider>
+            </div>
+            <div class="recordingPan">
+               <v-slider v-model="media" label="Pan"></v-slider>
+              <span class="recordingSettingStartValue">L</span>
+
+              <span class="recordingSettingEndValue">R</span>
+            </div>
+          </div>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <div class="recordings"></div>
+    <div class="newRecord">
+      <font-awesome-icon
+        :icon="['far', 'folder']"
+        style="color: black"
+        size="2x"
+      />
+      <img src="../assets/record.svg" alt="" />
+      <router-link to="/Post"
+        ><img src="../assets/upload.svg" alt="" />
+      </router-link>
+    </div>
+  </div>
+</template>
+  
+  <script>
+</script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

@@ -70,10 +70,10 @@
   </form>
         <v-btn
         block
-        color="secondary"
         :disabled="!form"
         :loading="isLoading"
-
+        class="white--text"
+        color="deep-purple accent-4"
         depressed
       >
         Post

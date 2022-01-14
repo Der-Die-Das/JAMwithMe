@@ -28,83 +28,93 @@
 
         <v-expansion-panel-content class="recording">
           <div class="recordingContent">
-            <div class="recordingTime">
-              <span class="recordingSettingTitle">Time</span>
-              <span class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value="50"
-                  class="slider2"
-                />
-              </span>
-              <span class="recordingSettingStartValue">00:12</span>
-              <span class="recordingSettingEndValue">03:02</span>
-            </div>
+            <v-row class="mb-5" no-gutters>
+              <v-col cols="2">
+                <span>Time</span>
+
+              </v-col>
+              <v-col>                <span class="recordingSettingStartValue ">00:12</span></v-col>
+              <v-col cols="10">
+                <div class="recordingTime">
+                  <v-slider v-model="media"> </v-slider>
+                </div>
+              </v-col>
+              <v-col >
+                <span class="recordingSettingEndValue">03:02</span>
+              </v-col>
+            
+              <v-col>
             <div class="recordingTimeControl">
               <span><font-awesome-icon icon="undo" /></span>
-              <span><font-awesome-icon
-                :icon="['far', 'pause-circle']"
-                style="color: black"
-                size="lg"
+              <span
+                ><font-awesome-icon
+                  :icon="['far', 'pause-circle']"
+                  style="color: black"
+                  size="lg"
               /></span>
               <span><font-awesome-icon icon="undo" flip="horizontal" /></span>
-              
-              
             </div>
-
-            <div class="recordingVol">
-              <span class="recordingSettingTitle">Vol</span>
-              <span class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value="50"
-                  class="slider"
-                />
-              </span>
-            </div>
-            <div class="recordingBass">
-              <span class="recordingSettingTitle">Bass</span>
-              <span class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value="50"
-                  class="slider"
-                />
-              </span>
-            </div>
-            <div class="recordingTreble">
-              <span class="recordingSettingTitle">Treble</span>
-              <span class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value="50"
-                  class="slider"
-                />
-              </span>
-            </div>
-            <div class="recordingPan">
-              <span class="recordingSettingTitle">Pan</span>
-              <span class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value="50"
-                  class="slider2"
-                />
-              </span>
-              <span class="recordingSettingStartValue">L</span>
-
-              <span class="recordingSettingEndValue">R</span>
-            </div>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="2">
+                <span>Vol</span>
+              </v-col>
+              <v-col cols="10">
+                <div class="recordingVol">
+                  <v-slider v-model="media"> </v-slider>
+                </div>
+              </v-col>
+              <v-col>
+              </v-col> 
+              <v-col>
+              </v-col>
+            </v-row>
+                        <v-row no-gutters>
+              <v-col cols="2">
+                <span>Bass</span>
+              </v-col>
+              <v-col cols="10">
+                <div class="recordingBass">
+                  <v-slider v-model="media"> </v-slider>
+                </div>
+              </v-col>
+              <v-col>
+              </v-col> 
+              <v-col>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="2">
+                <span>Treble</span>
+              </v-col>
+              <v-col cols="10">
+                <div class="recordingTreble">
+                  <v-slider v-model="media"> </v-slider>
+                </div>
+              </v-col>
+              <v-col>
+              </v-col> 
+              <v-col>
+              </v-col>
+            </v-row>
+                        <v-row no-gutters>
+              <v-col cols="2">
+                <span>Pan</span>
+                
+              </v-col>
+              <v-col><span class="recordingSettingStartValue">L</span></v-col>
+              <v-col cols="10">
+                <div class="recordingTime">
+                  <v-slider v-model="media"> </v-slider>
+                </div>
+              </v-col>
+              <v-col>
+                <span class="recordingSettingEndValue">R</span>
+              </v-col>
+              <v-col>
+              </v-col>
+            </v-row>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -113,12 +123,14 @@
     <div class="recordings"></div>
     <div class="newRecord">
       <font-awesome-icon
-                :icon="['far', 'folder']"
-                style="color: black"
-                size="2x"
-              />
+        :icon="['far', 'folder']"
+        style="color: black"
+        size="2x"
+      />
       <img src="../assets/record.svg" alt="" />
-      <img src="../assets/upload.svg" alt="">
+      <router-link to="/Post"
+        ><img src="../assets/upload.svg" alt="" />
+      </router-link>
     </div>
   </div>
 </template>

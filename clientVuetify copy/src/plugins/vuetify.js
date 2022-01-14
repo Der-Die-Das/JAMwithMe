@@ -4,7 +4,7 @@ import Vuetify from 'vuetify/lib';
 Vue.use(Vuetify);
 
 export default new Vuetify({
-  customVariables: ['clientVuetify/src/scss/variables.scss'],
+  customVariables: ['variables.scss'],
   theme: {
 
       options: {

@@ -115,7 +115,7 @@ header {
   bottom: 10px;
   left: 5px;
   z-index: 95;
-  width: 88%;
+  width: 96%;
   height: 24px;
 }
 .postContent img {
@@ -232,12 +232,12 @@ margin: 15px;
 }
 
 .recordingTime {
+padding-bottom: 10px;
 display: flex;
   vertical-align: center;
   justify-content: space-between;
 }
 .recordingTimeControl{
-
 
 }
 .recordingTimeControl span:nth-child(1){
@@ -253,18 +253,22 @@ display: flex;
   left: 59.5%;
 }
 .recordingVol {
+
   display: flex;
   vertical-align: center;
 }
 .recordingBass {
+
   display: flex;
   vertical-align: center;
 }
 .recordingTreble {
+
   display: flex;
   vertical-align: center;
 }
 .recordingPan {
+
   vertical-align: center;
     justify-content: space-between;
 }
@@ -280,27 +284,19 @@ display: flex;
 }
 .recordingSettingStartValue {
     position: absolute;
+    left: 20%;
   font-weight: 200;
   font-size: 8px;
-  margin-top: 26px;
-  width: 40px;
-  margin-left: -12px;
-  text-align: center;
-}
-
-.teest{
-  text-align: right;
-  font-weight: 200;
-  font-size: 8px;
+  margin-top: 7px;
 }
 .recordingSettingEndValue {
       position: absolute;
-  right: 12px;
+    left: 84%;
   font-weight: 200;
   font-size: 8px;
-  margin-top: 26px;
-    width: 40px;
-    text-align: center;
+    margin-top: 7px;
+    width: 6%;
+    text-align: end;
 }
 
 
@@ -380,23 +376,6 @@ display: flex;
 .test3{
   width: 32px;
   height: 48px;
-}
-
-.test4{
-  color: aqua;
-}
-
-.time{
-  color: #eeeeee;
-  display: flex;
-  position: absolute;
-  float: right;
-  right: 0px;
-  bottom: 10px;
-  z-index: 95;
-  width: 10%;
-  font-size: 10px;
-  white-space:nowrap;
 }
 
 </style>

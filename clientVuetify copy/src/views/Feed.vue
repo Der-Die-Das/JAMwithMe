@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="posts">
-            <div class="post">
+      <div class="post">
         <div class="postHeader">
           <div class="postUser">
             <div class="postUserPic">
@@ -35,16 +35,17 @@
           <img src="https://picsum.photos/800/401" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl"
+              class="postContentControl cyan-text"
               prepend-icon="mdi-play"
+                        thumb-color="accent"
               v-model="media"
+              color="accent"
+              track-color="accent"
               inverse-label
-          dark
+          label="00:11 / 03:02"
             >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
+            </v-slider>
           </div>
-
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
@@ -91,14 +92,16 @@
           <img src="https://picsum.photos/800/402" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl"
+              class="postContentControl cyan-text"
               prepend-icon="mdi-play"
+                        thumb-color="accent"
               v-model="media"
+              color="accent"
+              track-color="accent"
               inverse-label
-          dark
+          label="00:11 / 03:02"
             >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
+            </v-slider>
           </div>
         </div>
         <div class="postIcons">
@@ -146,14 +149,16 @@
           <img src="https://picsum.photos/800/403" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl"
+              class="postContentControl cyan-text"
               prepend-icon="mdi-play"
+                        thumb-color="accent"
               v-model="media"
+              color="accent"
+              track-color="accent"
               inverse-label
-          dark
+          label="00:11 / 03:02"
             >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
+            </v-slider>
           </div>
         </div>
         <div class="postIcons">

@@ -7,6 +7,8 @@ import Search from '../views/Search.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Profile from '../views/Profile.vue'
+import otherProfile from '../views/otherProfile.vue'
+import Tag from '../views/Tag.vue'
 
 Vue.use(VueRouter)
 
@@ -46,6 +48,16 @@ const routes = [
     path: '/Profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/otherProfile',
+    name: 'otherProfile',
+    component: otherProfile
+  },
+  {
+    path: '/tag',
+    name: 'tag',
+    component: Tag
   }
 ]
 

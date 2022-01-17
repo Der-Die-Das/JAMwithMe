@@ -13,11 +13,10 @@
     </div>
     <div class="search">
       <v-autocomplete
-        v-model="model"
+      v-model="model"
         :items="items"
         :loading="isLoading"
         :search-input.sync="search"
-        chips
         clearable
         hide-details
         hide-selected
@@ -28,49 +27,67 @@
         label="Search"
         solo
       >
-        <template v-slot:no-data>
-        </template>
-        <template v-slot:item="{ item }" class="searchResults">
-          <v-list-item-avatar
-            color="indigo"
-            class="text-h5 font-weight-light white--text"
-          >
-            <img
-        src="https://picsum.photos/50"
-        alt="John"
-      >
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.name"></v-list-item-title>
-            <v-list-item-subtitle v-text="item.symbol"></v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-          </v-list-item-action>
-        </template>
       </v-autocomplete>
       <template >
         <v-tabs
           v-model="tab"
-          :hide-slider="!model"
           color="blue-grey"
           slider-color="blue-grey"
         >
-          <v-tab :disabled="!model">
+           <v-tab v-model="tab">
             <v-icon>
               mdi-menu
             </v-icon>
           </v-tab>
-          <v-tab :disabled="!model">
+          <v-tab v-model="tab">
             <v-icon>
               mdi-account-outline
             </v-icon>
           </v-tab>
-          <v-tab :disabled="!model">
+           <v-tab v-model="tab">
             <v-icon>
               mdi-pound
             </v-icon>
           </v-tab>
         </v-tabs>
+<v-tabs-items v-model="tab">
+      <v-tab-item
+        v-for="item in items"
+        :key="item.tab"
+      >
+    <v-list>
+      <template v-for="(item, index) in items">
+        <v-subheader
+          v-if="item.header"
+          :key="item.header"
+          v-text="item.header"
+        ></v-subheader>
+
+        <v-divider
+          v-else-if="item.divider"
+          :key="index"
+          :inset="item.inset"
+        ></v-divider>
+
+        <v-list-item
+          v-else
+          :key="item.title"
+        >
+          <v-list-item-avatar>
+            <v-img :src="item.avatar"></v-img>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title v-html="item.title"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+    </v-list>
+          
+        
+      </v-tab-item>
+    </v-tabs-items>
+
       </template>
     </div>
     </div>
@@ -78,40 +95,72 @@
 
 
 <script>
-var X = 1;
   export default {
-    data: () => ({
-    isLoading: false,
-    items: [],
-    model: null,
-    search: null,
-    tab: null,
-  }),
+    data () {
+      return {
+        isLoading: false,
+        tab: null,
+        model: null,
+      search: null,
+      val:  0,
+items: [
+        { header: 'Profiles' },
+        {
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+          title: 'Brunch this weekend?',
+        },        
+        { divider: true, inset: true },
+        {
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+          title: 'Summer BBQ',
+  
+        },
+        { divider: true, inset: true },
+        {
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+          title: 'Oui oui',
+         
+        },
+        { divider: true, inset: true },
+        {
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
+          title: 'Birthday gift',
+         
+        },
+        { divider: true, inset: true },
+        {
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+          title: 'Recipe to try',
+         
+        },
+      ],
+        watch: {
+      model (val) {
+        if (val != null) this.tab = 0
+        else this.tab = null
+      },
+      search () {
+        // Items have already been loaded
+        if (this.items.length > 0) return
 
-  watch: {
-    model () {
-      if (X != null) this.tab = 0
-      else this.tab = null
+        this.isLoading = true
+
+        // Lazily load input items
+        fetch('https://api.coingecko.com/api/v3/coins/list')
+          .then(res => res.clone().json())
+          .then(res => {
+            this.items = res
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => (this.isLoading = false))
+      },
     },
-    search () {
-      // Items have already been loaded
-      if (this.items.length > 0) return
-
-      this.isLoading = true
-
-      // Lazily load input items
-      fetch('https://api.coingecko.com/api/v3/coins/list')
-        .then(res => res.clone().json())
-        .then(res => {
-          this.items = res
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .finally(() => (this.isLoading = false))
-    },
-  },
-}
+  }
+      }
+    
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

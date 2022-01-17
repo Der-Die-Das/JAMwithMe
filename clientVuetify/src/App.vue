@@ -408,5 +408,8 @@ margin-right: auto;
 .searchResults{
   margin-top: 40px;
 }
+.profileDescription{
+  margin-bottom: 20px;
+}
 
 </style>

@@ -5,13 +5,6 @@
         <img src="../assets/logo.png" alt="Logo" />
       </div>
       <div class="headerTopIcons">
-        <i
-          ><a href="#"
-            ><font-awesome-icon
-              :icon="['far', 'heart']"
-              style="color: black"
-              size="lg" /></a
-        ></i>
         <i>
           <router-link to="/Profile"
             ><img src="https://picsum.photos/99" alt="ProfilePicture"
@@ -19,7 +12,7 @@
         </i>
       </div>
     </div>
-    <div class="recordingName">new Recording</div>
+    <div class="Title">new Recording</div>
     <v-expansion-panels class="recordings">
       <v-expansion-panel v-model="panel" v-for="(item, i) in 5" :key="i">
         <v-expansion-panel-header>

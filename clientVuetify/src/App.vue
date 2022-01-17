@@ -216,8 +216,8 @@ text-align: center;
 }
 
 
-.recordingName {
-  font-weight: 700;
+.Title {
+font-weight: 700;
 margin: 15px;
 
 }
@@ -237,7 +237,6 @@ display: flex;
   justify-content: space-between;
 }
 .recordingTimeControl{
-
 
 }
 .recordingTimeControl span:nth-child(1){
@@ -397,6 +396,13 @@ display: flex;
   width: 10%;
   font-size: 10px;
   white-space:nowrap;
+}
+
+.search{
+margin-top: 15px;
+width: 90%;
+margin-left: auto;
+margin-right: auto;
 }
 
 </style>

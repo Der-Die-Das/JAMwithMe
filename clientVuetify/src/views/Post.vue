@@ -5,13 +5,6 @@
         <img src="../assets/logo.png" alt="Logo" />
       </div>
       <div class="headerTopIcons">
-        <i
-          ><a href="#"
-            ><font-awesome-icon
-              :icon="['far', 'heart']"
-              style="color: black"
-              size="lg" /></a
-        ></i>
         <i>
            <router-link to="/Profile"><img src="https://picsum.photos/99" alt="ProfilePicture" /></router-link>
         </i>
@@ -21,8 +14,7 @@
     <div class="postsSettings">
       <div class="postSetting">
         <div class="postSettingsHeader">
-          <div class="postSettingName">Edit Post</div>
-          <hr class="solid" />
+          <div class="Title">Edit Post</div>
         </div>
         <div class="postSettingContent">
  <form>
@@ -57,6 +49,7 @@
           name="input-7-1"
           label="Description"
           value=""
+          counter="100"
           auto-grow
         ></v-textarea>
 
@@ -73,7 +66,6 @@
         color="secondary"
         :disabled="!form"
         :loading="isLoading"
-
         depressed
       >
         Post

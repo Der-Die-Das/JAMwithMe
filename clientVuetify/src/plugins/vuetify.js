@@ -6,7 +6,6 @@ Vue.use(Vuetify);
 export default new Vuetify({
   customVariables: ['clientVuetify/src/scss/variables.scss'],
   theme: {
-
       options: {
         customProperties: true,
 

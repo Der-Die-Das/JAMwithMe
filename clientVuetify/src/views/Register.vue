@@ -11,22 +11,20 @@
           class="test"
         ></v-text-field>
         <v-text-field
-          id="password"
+          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="show1 ? 'text' : 'password'"
           name="password"
           label="password"
-          type="password"
+          @click:append="show1 = !show1"
           solo
-          class="test"
-          color="secondary"
         ></v-text-field>
                 <v-text-field
-          id="password"
-          name="password"
+          :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="show2 ? 'text' : 'password'"
+          name="retype-password"
           label="retype password"
-          type="password"
+          @click:append="show2 = !show2"
           solo
-          class="test"
-          color="secondary"
         ></v-text-field>
       </v-form>
 
@@ -39,6 +37,14 @@
 </template>
 
 <script>
+ export default {
+    data () {
+      return {
+        show1: false,
+        show2: false,
+      }
+    }
+ }
 </script>
 
 

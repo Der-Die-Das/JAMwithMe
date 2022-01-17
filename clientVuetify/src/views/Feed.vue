@@ -5,13 +5,6 @@
         <img src="../assets/logo.png" alt="Logo" />
       </div>
       <div class="headerTopIcons">
-        <i
-          ><a href="#"
-            ><font-awesome-icon
-              :icon="['far', 'heart']"
-              style="color: black"
-              size="lg" /></a
-        ></i>
         <i>
           <router-link to="/Profile">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
@@ -49,7 +42,6 @@
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -70,11 +62,13 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+    <v-textarea
+      label="Add comment..."
+      rows="1"
+      auto-grow
+      :value="value"
+            append-icon="mdi-send-circle-outline"
+    ></v-textarea>
         </div>
       </div>
       <div class="post">
@@ -104,7 +98,6 @@
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -125,11 +118,13 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+    <v-textarea
+      label="Add comment..."
+      rows="1"
+      auto-grow
+      :value="value"
+            append-icon="mdi-send-circle-outline"
+    ></v-textarea>
         </div>
       </div>
       <div class="post">
@@ -159,7 +154,6 @@
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -180,11 +174,13 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+    <v-textarea
+      label="Add comment..."
+      rows="1"
+      auto-grow
+      :value="value"
+      append-icon="mdi-send-circle-outline"
+    ></v-textarea>
         </div>
       </div>
     </div>

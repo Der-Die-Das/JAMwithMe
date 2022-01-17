@@ -14,7 +14,7 @@
     </div>
     <div class="Title">new Recording</div>
     <v-expansion-panels class="recordings">
-      <v-expansion-panel v-model="panel" v-for="(item, i) in 5" :key="i">
+      <v-expansion-panel v-for="(item, i) in 5" :key="i">
         <v-expansion-panel-header>
           <span class="recordingContentHeader">RecordingXX</span>
         </v-expansion-panel-header>
@@ -29,7 +29,7 @@
               <v-col>                <span class="recordingSettingStartValue ">00:12</span></v-col>
               <v-col cols="10">
                 <div class="recordingTime">
-                  <v-slider v-model="media"> </v-slider>
+                  <v-slider> </v-slider>
                 </div>
               </v-col>
               <v-col >
@@ -55,7 +55,7 @@
               </v-col>
               <v-col cols="10">
                 <div class="recordingVol">
-                  <v-slider v-model="media"> </v-slider>
+                  <v-slider > </v-slider>
                 </div>
               </v-col>
               <v-col>
@@ -69,7 +69,7 @@
               </v-col>
               <v-col cols="10">
                 <div class="recordingBass">
-                  <v-slider v-model="media"> </v-slider>
+                  <v-slider > </v-slider>
                 </div>
               </v-col>
               <v-col>
@@ -83,7 +83,7 @@
               </v-col>
               <v-col cols="10">
                 <div class="recordingTreble">
-                  <v-slider v-model="media"> </v-slider>
+                  <v-slider > </v-slider>
                 </div>
               </v-col>
               <v-col>
@@ -99,7 +99,7 @@
               <v-col><span class="recordingSettingStartValue">L</span></v-col>
               <v-col cols="10">
                 <div class="recordingTime">
-                  <v-slider v-model="media"> </v-slider>
+                  <v-slider> </v-slider>
                 </div>
               </v-col>
               <v-col>

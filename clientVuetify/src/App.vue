@@ -405,4 +405,8 @@ margin-left: auto;
 margin-right: auto;
 }
 
+.searchResults{
+  margin-top: 40px;
+}
+
 </style>

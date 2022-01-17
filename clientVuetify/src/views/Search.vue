@@ -30,12 +30,15 @@
       >
         <template v-slot:no-data>
         </template>
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ item }" class="searchResults">
           <v-list-item-avatar
             color="indigo"
             class="text-h5 font-weight-light white--text"
           >
-            {{ item.name.charAt(0) }}
+            <img
+        src="https://picsum.photos/50"
+        alt="John"
+      >
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -53,13 +56,19 @@
           slider-color="blue-grey"
         >
           <v-tab :disabled="!model">
-            News
+            <v-icon>
+              mdi-menu
+            </v-icon>
           </v-tab>
           <v-tab :disabled="!model">
-            Trading
+            <v-icon>
+              mdi-account-outline
+            </v-icon>
           </v-tab>
           <v-tab :disabled="!model">
-            Blog
+            <v-icon>
+              mdi-pound
+            </v-icon>
           </v-tab>
         </v-tabs>
       </template>

@@ -23,6 +23,8 @@ CREATE TABLE Jam(
     ID SERIAL PRIMARY KEY,
     Creator INTEGER NOT NULL,
     PreJam INTEGER,
+    ThumbnailPath varchar(255),
+    CreationDate date,
     CONSTRAINT FK_JamCreator
       FOREIGN KEY(Creator) 
 	  REFERENCES Account(ID),
@@ -58,7 +60,7 @@ CREATE TABLE Comment(
 
 CREATE TABLE RawRecording(
     ID SERIAL PRIMARY KEY,
-    Recording BYTEA NOT NULL
+    RecordingPath varchar(255) NOT NULL
 );
 
 CREATE TABLE RecordingInfos(

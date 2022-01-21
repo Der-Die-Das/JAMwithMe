@@ -5,6 +5,9 @@ FROM node:14-alpine3.12
 # this is the location where you will be inside the container
 WORKDIR /usr/src/app
 
+
+RUN mkdir /usr/src/app/media
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)

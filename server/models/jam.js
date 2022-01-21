@@ -22,6 +22,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'jam',
         key: 'id'
       }
+    },
+    thumbnailpath: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    creationdate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -22,7 +22,8 @@ services:
       - db
     ports:
       - "3000:3000"
-    # volumes:
+    volumes:
+      - media-data:/usr/src/app/media
       # Maps our current project directory `.` to
       # our working directory in the container
       # - ./:/usr/src/app/
@@ -43,3 +44,4 @@ services:
 
 volumes:
   postgres-data: 
+  media-data:

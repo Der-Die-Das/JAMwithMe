@@ -7,8 +7,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    recording: {
-      type: DataTypes.BLOB,
+    recordingpath: {
+      type: DataTypes.STRING(255),
       allowNull: false
     }
   }, {

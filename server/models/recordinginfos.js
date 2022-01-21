@@ -27,6 +27,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DOUBLE,
       allowNull: true
     },
+    pan: {
+      type: DataTypes.DOUBLE,
+      allowNull: true
+    },
     bass: {
       type: DataTypes.DOUBLE,
       allowNull: true

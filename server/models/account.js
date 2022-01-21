@@ -18,6 +18,14 @@ module.exports = function(sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    profilepicturepath: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    bio: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,

@@ -1,7 +1,6 @@
 var LocalStrategy = require('passport-local').Strategy;
 const models = require("../models/index").models;
 var crypto = require('crypto');
-const saltRounds = 10;
 
 module.exports = (passport) => {
     passport.serializeUser(function (user, done) {

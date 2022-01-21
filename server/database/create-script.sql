@@ -1,8 +1,10 @@
 CREATE TABLE Account (
     ID SERIAL PRIMARY KEY,
-    Username varchar(255) NOT NULL,
-    Email varchar(255) NOT NULL,
-    Password varchar(255) NOT NULL
+    Username VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    ProfilePicturePath VARCHAR(255) NULL,
+    Bio VARCHAR(255) NULL
 );
 
 CREATE TABLE Friends (
@@ -23,7 +25,7 @@ CREATE TABLE Jam(
     ID SERIAL PRIMARY KEY,
     Creator INTEGER NOT NULL,
     PreJam INTEGER,
-    ThumbnailPath varchar(255),
+    ThumbnailPath VARCHAR(255),
     CreationDate date,
     CONSTRAINT FK_JamCreator
       FOREIGN KEY(Creator) 
@@ -49,7 +51,7 @@ CREATE TABLE Comment(
     ID SERIAL PRIMARY KEY,
     Creator INTEGER NOT NULL,
     Jam INTEGER NOT NULL,
-    Text varchar(255) NOT NULL,
+    Text VARCHAR(255) NOT NULL,
     CONSTRAINT FK_CommentCreator
       FOREIGN KEY(Creator) 
 	  REFERENCES Account(ID),
@@ -60,7 +62,7 @@ CREATE TABLE Comment(
 
 CREATE TABLE RawRecording(
     ID SERIAL PRIMARY KEY,
-    RecordingPath varchar(255) NOT NULL
+    RecordingPath VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE RecordingInfos(

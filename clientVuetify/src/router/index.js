@@ -10,6 +10,7 @@ import Profile from '../views/Profile.vue'
 import otherProfile from '../views/otherProfile.vue'
 import Tag from '../views/Tag.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [

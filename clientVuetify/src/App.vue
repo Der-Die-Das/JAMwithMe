@@ -1,13 +1,14 @@
 <template>
 <v-app>
+  <div v-if="loggedIn">
     <footer>
       <span><router-link class="nav" to="/Feed"><font-awesome-icon icon="home" /></router-link></span>
       <span><router-link class="nav" to="/Search"
         ><font-awesome-icon icon="search"
       /></router-link></span>
       <span><router-link to="/Jam"><img src="./assets/icon.jpg" alt="jam" /></router-link></span>
-      
     </footer>
+    </div>
     <main role="main">
       <router-view />
     </main>
@@ -15,9 +16,34 @@
 </template>
 
 <script>
+import axios from "axios";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:3000/api/"
 export default {
   name: "App",
-};
+    data() {
+    return {
+      loggedIn: true,
+    }
+    },
+    methods: {
+      login(variable) {
+        this.loggedIn = variable;
+      }
+
+    },
+    async mounted (){
+      if(this.loggedIn == false) {
+              this.$router.push("/login")
+      }
+      else{
+// toDO
+      }
+
+    }
+
+}
+
 </script>
 
 <style>

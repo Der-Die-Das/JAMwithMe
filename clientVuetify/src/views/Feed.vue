@@ -12,9 +12,11 @@
         </i>
       </div>
     </div>
+
     <div class="posts">
             <div class="post">
         <div class="postHeader">
+                  <h1 v-if="loggedIn"> test</h1>
           <div class="postUser">
             <div class="postUserPic">
               <img src="https://picsum.photos/101" alt="ProfilePicture" />
@@ -188,6 +190,8 @@
 </template>
 
 <script>
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

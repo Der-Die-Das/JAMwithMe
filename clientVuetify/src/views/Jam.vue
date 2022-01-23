@@ -12,6 +12,8 @@
         </i>
       </div>
     </div>
+
+
     <div class="Title">new Recording</div>
     <v-expansion-panels class="recordings">
       <v-expansion-panel v-for="(item, i) in 5" :key="i">

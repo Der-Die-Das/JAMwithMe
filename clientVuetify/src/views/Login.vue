@@ -45,15 +45,20 @@ export default {
         username: null,
         password: null,
       },
+      loggedIn : false,
     };
   },
   methods: {
-    submit() {
-      console.log(this.credentials.username);
-      axios.post('http://localhost:3000/api/user/login', {
+    async submit() {
+      await axios.post('user/login', {
         username: this.credentials.username,
         password: this.credentials.password,
+
       });
+      this.$router.push("/Feed"),
+      this.loggedIn = true
+      
+      await axios.get('jam/all')
     },
   },
 };

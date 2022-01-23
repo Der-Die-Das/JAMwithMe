@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <div class="credentials">
+    <!-- <div class="credentials">
       <img src="../assets/logo.png" alt="Logo" />
       <v-form>
         <v-text-field
@@ -29,19 +29,23 @@
         </v-row>
       </v-container>
       <v-btn block color="secondary">sign up</v-btn>
-    </div>
+    </div> -->
+    <input type="text" v-model="credentials.username" />
+    <button @click="submit">login</button>
   </v-container>
 </template>
 
 <script>
-
- export default {
-    data () {
-      return {
-        show1: false,
-      }
-    }
- }
+export default {
+  data: function () {
+    return { credentials: { username: "asd", password: "asd" } };
+  },
+  methods: {
+    submit: function () {
+      console.log(this.credentials.username);
+    },
+  },
+};
 </script>
 
 

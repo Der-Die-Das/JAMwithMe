@@ -131,4 +131,66 @@ router.post('/unlike',
         res.status(result > 0 ? 200 : 400).send();
     });
 
+router.post('/create',
+    isAuth,
+    async (req, res, next) => {
+        if (req.files == null ||
+            !req.files.thumbnail ||
+            !req.files.rawrecording) {
+            res.status(400).send();
+            return;
+        }
+        if (req.body.recordinginfos.length < 1) {
+            res.status(400).send();
+            return;
+        }
+        const recordingInfos = req.body.recordinginfos;
+
+        const thumbnailFileName = uuid.v4() + "." +
+            req.files.thumbnail.extension;
+        const rawRecordingFileName = uuid.v4() + "." +
+            req.files.rawRecording.extension;;
+
+        const transaction = await sequelize.transaction();
+        try {
+            const newJam = await models.jam.create(
+                {
+                    creator: req.user.id,
+                    prejam: req.body.preJamID,
+                    thumbnailPath: mediaFolder + thumbnailFileName,
+                    creationDate: new Date()
+                });
+            const newRawRecording = await models.rawrecording.create({
+                recordingpath: mediaFolder + rawRecordingFileName
+            })
+
+            let recordingInfoForNewJamFound = false;
+            for (let i = 0; i < recordingInfos.length; i++) {
+                const recordingInfo = recordingInfos[i];
+                if (!recordingInfo.id) {
+                    if (recordingInfoForNewJamFound)
+                        throw "More than one recordingInfo had no id";
+                    recordingInfoForNewJamFound = true;
+                    recordingInfo.jam = newJam.id;
+                    recordingInfo.recording = newRawRecording.id;
+                    await models.recordinginfos.create(recordingInfo);
+                    continue;
+                }
+                await models.recordinginfos.create(recordingInfo);
+            }
+            if (!recordingInfoForNewJamFound)
+                throw "There was no recordinginfo with no id"
+
+            await req.files.thumbnail.mv(mediaFolder + thumbnailFileName);
+            await req.files.thumbnail.mv(mediaFolder + rawRecordingFileName);
+
+            transaction.commit();
+        }
+        catch {
+            await transaction.rollback();
+            res.status(500).send();
+        }
+        res.status(201).send();
+    });
+
 module.exports = router;

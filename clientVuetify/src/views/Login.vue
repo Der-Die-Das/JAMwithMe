@@ -23,14 +23,30 @@
       </v-form>
 
       <v-container class="test2">
-        <v-row >
+        <v-row>
           <v-divider></v-divider>
           <div class="test">or</div>
           <v-divider></v-divider>
         </v-row>
       </v-container>
-      <v-btn block color="secondary">sign up</v-btn>
+      <v-btn to="/register" block color="secondary">sign up</v-btn>
     </div>
+    <v-dialog v-model="passwordErrorDialog" width="500">
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          Login failed
+        </v-card-title>
+
+        <v-card-text> The username or password is incorrect” </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="passwordErrorDialog = false">
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -40,25 +56,34 @@ import axios from "axios";
 export default {
   data() {
     return {
-            show1: false,
+      show1: false,
+      passwordErrorDialog: false,
       credentials: {
         username: null,
         password: null,
       },
-      loggedIn : false,
     };
   },
   methods: {
     async submit() {
-      await axios.post('user/login', {
-        username: this.credentials.username,
-        password: this.credentials.password,
-
-      });
-      this.$router.push("/Feed"),
-      this.loggedIn = true
-      
-      await axios.get('jam/all')
+      const vm = this;
+      axios
+        .post("user/login", {
+          username: this.credentials.username,
+          password: this.credentials.password,
+        })
+        .then(function () {
+          vm.$router.push("/feed");
+        })
+        .catch(function (error) {
+          console.log(error.response.status); // 401
+          console.log(error.response.data.error); //Please Authenticate or whatever returned from server
+          if (error.response.status == 401) {
+            //vm.$router.push("/register");
+            vm.credentials.password = null;
+            vm.passwordErrorDialog = true;
+          }
+        });
     },
   },
 };

@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const passport = require("passport");
-const isAuth = require("../../auth-middleware/index").isAuth;
+const passport = require('passport');
+const isAuth = require('../../auth-middleware/index').isAuth;
 const crypto = require('crypto');
-const { models, sequelize } = require("../../models/index");
+const { models, sequelize } = require('../../models/index');
 const uuid = require('uuid');
-const mediaFolder = "@/media/";
+const mediaFolder = '@/media/';
 
 
 router.get('/',
@@ -16,12 +16,12 @@ router.get('/',
                 where: { id: jamID },
                 include: [
                     {
-                        model: models.recordinginfos, require: true, as: "recordinginfos",
-                        include: [{ model: models.rawrecording, required: true, as: "recording_rawrecording" }]
+                        model: models.recordinginfos, require: true, as: 'recordinginfos',
+                        include: [{ model: models.rawrecording, required: true, as: 'recording_rawrecording' }]
                     },
 
                 ]
-            });
+            }).catch(next)
         res.status(200).send(jamObject);
     }
 );
@@ -29,7 +29,8 @@ router.get('/',
 router.get('/all',
     isAuth,
     async (req, res, next) => {
-        const allJams = await models.jam.findAll({ raw: true });
+        const allJams = await models.jam.findAll({ raw: true })
+            .catch(next)
         const allJamIDs = allJams.map(x => x.id);
         res.status(200).send(allJamIDs);
     }
@@ -43,7 +44,7 @@ router.get('/likes',
             where: {
                 jam: jamId
             }
-        });
+        }).catch(next)
 
         res.status(200).send({ jamID: jamId, likeCount: count });
     }
@@ -57,7 +58,7 @@ router.get('/comments',
             where: {
                 jam: jamId
             }
-        });
+        }).catch(next)
         res.status(200).send(comments);
     }
 );
@@ -70,7 +71,7 @@ router.delete('/delete',
             where: {
                 id: jamId
             }
-        });
+        }).catch(next)
         if (jamObject.creator != req.user.id) {
             res.status(401).send();
         }
@@ -107,13 +108,14 @@ router.post('/like',
                 jam: jamId,
                 account: req.user.id
             }
-        })
+        }).catch(next)
         if (alreadyLiked) {
             res.status(400).send();
             return;
         }
 
-        await models.upvote.create({ jam: jamId, account: req.user.id });
+        await models.upvote.create({ jam: jamId, account: req.user.id })
+            .catch(next)
 
         res.send(201).send();
     });
@@ -127,7 +129,7 @@ router.post('/unlike',
                 jam: jamId,
                 account: req.user.id
             }
-        })
+        }).catch(next)
         res.status(result > 0 ? 200 : 400).send();
     });
 
@@ -146,9 +148,9 @@ router.post('/create',
         }
         const recordingInfos = req.body.recordinginfos;
 
-        const thumbnailFileName = uuid.v4() + "." +
+        const thumbnailFileName = uuid.v4() + '.' +
             req.files.thumbnail.extension;
-        const rawRecordingFileName = uuid.v4() + "." +
+        const rawRecordingFileName = uuid.v4() + '.' +
             req.files.rawRecording.extension;;
 
         const transaction = await sequelize.transaction();
@@ -169,7 +171,7 @@ router.post('/create',
                 const recordingInfo = recordingInfos[i];
                 if (!recordingInfo.id) {
                     if (recordingInfoForNewJamFound)
-                        throw "More than one recordingInfo had no id";
+                        throw 'More than one recordingInfo had no id';
                     recordingInfoForNewJamFound = true;
                     recordingInfo.jam = newJam.id;
                     recordingInfo.recording = newRawRecording.id;
@@ -179,7 +181,7 @@ router.post('/create',
                 await models.recordinginfos.create(recordingInfo);
             }
             if (!recordingInfoForNewJamFound)
-                throw "There was no recordinginfo with no id"
+                throw 'There was no recordinginfo with no id'
 
             await req.files.thumbnail.mv(mediaFolder + thumbnailFileName);
             await req.files.thumbnail.mv(mediaFolder + rawRecordingFileName);

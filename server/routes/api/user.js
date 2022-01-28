@@ -1,16 +1,18 @@
 const router = require('express').Router();
-const passport = require("passport");
-const isAuth = require("../../auth-middleware/index").isAuth;
+const passport = require('passport');
+const isAuth = require('../../auth-middleware/index').isAuth;
 const crypto = require('crypto');
-const models = require("../../models/index").models;
+const models = require('../../models/index').models;
 const uuid = require('uuid');
-const mediaFolder = "@/media/";
+const mediaFolder = '@/media/';
 const Op = require('sequelize').Op;
 
 router.get('/:id',
     isAuth,
     async (req, res, next) => {
-        var userObj = await models.account.findOne({ where: { id: req.params.id }, raw: true });
+        var userObj = await models.account.findOne({
+            where: { id: req.params.id }, raw: true
+        }).catch(next)
         if (!userObj) {
             res.status(404).send();
             return;
@@ -33,7 +35,7 @@ router.get('/',
             },
             raw: true,
             limit: 5
-        });
+        }).catch(next)
         if (!userObjects) {
             res.status(404).send();
             return;
@@ -70,7 +72,8 @@ router.post('/logout',
 router.get('/jams',
     isAuth,
     async (req, res, next) => {
-        const allJams = await models.jam.findAll({ where: { creator: req.user.id } });
+        const allJams = await models.jam.findAll({ where: { creator: req.user.id } })
+            .catch(next)
         const allJamIDs = allJams.map(x => x.id);
         res.status(200).send(allJamIDs);
     }
@@ -89,7 +92,7 @@ router.post('/',
                         where: {
                             id: req.user.id
                         }
-                    })
+                    }).catch(next)
             }
         }
 
@@ -100,7 +103,7 @@ router.post('/',
                     where: {
                         id: req.user.id
                     }
-                })
+                }).catch(next)
         }
         res.status(200).send();
     }
@@ -120,14 +123,17 @@ router.put('/password',
             where: {
                 id: req.user.id
             }
-        });
+        }).catch(next)
         if (hashedOldPasswordClient != user.password) {
             res.status(400).send();
         }
 
         await models.account.update(
             { password: hashedNewPassword },
-            { where: { id: req.user.id } });
+            {
+                where: { id: req.user.id }
+            })
+            .catch(next)
 
         res.status(200).send();
     }

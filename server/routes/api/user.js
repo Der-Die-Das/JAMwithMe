@@ -6,10 +6,17 @@ const models = require("../../models/index").models;
 const uuid = require('uuid');
 const mediaFolder = "@/media/";
 
-router.get('/',
+router.get('/:id',
     isAuth,
-    (req, res, next) => {
-        res.send("Yay");
+    async (req, res, next) => {
+        var userObj = await models.account.findOne({ where: { id: req.params.id }, raw: true });
+        if (!userObj) {
+            res.status(404).send();
+            return;
+        }
+        delete userObj.password;
+        delete userObj.email;
+        res.status(200).send(userObj);
     }
 );
 
@@ -37,7 +44,7 @@ router.post('/logout',
 router.get('/jams',
     isAuth,
     async (req, res, next) => {
-        const allJams = await models.jam.findAll({where:{creator:req.user.id}});
+        const allJams = await models.jam.findAll({ where: { creator: req.user.id } });
         const allJamIDs = allJams.map(x => x.id);
         res.status(200).send(allJamIDs);
     }

@@ -31,5 +31,18 @@ router.post('/delete',
         res.status(200).send();
     });
 
+router.get('/:id',
+    isAuth,
+    async (req, res, next) => {
+        const commentObj = await models.comment.findOne({
+            where: { id: req.params.id, },
+            raw: true
+        });
+        if (!commentObj) {
+            res.status(404).send();
+            return;
+        }
+        res.status(200).send(commentObj);
+    });
 
 module.exports = router;

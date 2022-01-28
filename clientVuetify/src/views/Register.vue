@@ -108,7 +108,6 @@ export default {
     register() {
       const vm = this;
       if (this.credentials.password == this.passwordCheck) {
-        console.log(this.credentials.username);
         axios
           .post("user/register", {
             username: this.credentials.username,

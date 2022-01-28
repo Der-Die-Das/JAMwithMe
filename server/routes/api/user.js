@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const models = require("../../models/index").models;
 const uuid = require('uuid');
 const mediaFolder = "@/media/";
+const Op = require('sequelize').Op;
 
 router.get('/:id',
     isAuth,
@@ -17,6 +18,31 @@ router.get('/:id',
         delete userObj.password;
         delete userObj.email;
         res.status(200).send(userObj);
+    }
+);
+
+router.get('/',
+    isAuth,
+    async (req, res, next) => {
+        const usernamePattern = '%' + req.query.usernamePattern + '%';
+        var userObjects = await models.account.findAll({
+            where: {
+                username: {
+                    [Op.iLike]: usernamePattern
+                }
+            },
+            raw: true,
+            limit: 5
+        });
+        if (!userObjects) {
+            res.status(404).send();
+            return;
+        }
+        for (let i = 0; i < userObjects.length; i++) {
+            delete userObjects[i].password;
+            delete userObjects[i].email;
+        }
+        res.status(200).send(userObjects);
     }
 );
 

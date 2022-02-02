@@ -4,7 +4,7 @@ const isAuth = require('../../auth-middleware/index').isAuth;
 const crypto = require('crypto');
 const { models, sequelize } = require('../../models/index');
 const uuid = require('uuid');
-const mediaFolder = '@/media/';
+const mediaFolder = 'media/';
 
 
 router.get('/',
@@ -47,6 +47,22 @@ router.get('/likes',
         }).catch(next)
 
         res.status(200).send({ jamID: jamId, likeCount: count });
+    }
+);
+
+router.get('/liked',
+    isAuth,
+    async (req, res, next) => {
+        const jamId = req.query.jamID;
+        const alreadyLiked = await models.upvote.findOne({
+            where: {
+                jam: jamId,
+                account: req.user.id
+            }
+        }).catch(next)
+
+
+        res.status(200).send({ liked: alreadyLiked ? true : false });
     }
 );
 

@@ -4,7 +4,7 @@ const isAuth = require('../../auth-middleware/index').isAuth;
 const crypto = require('crypto');
 const models = require('../../models/index').models;
 const uuid = require('uuid');
-const mediaFolder = '@/media/';
+const mediaFolder = 'media/';
 const Op = require('sequelize').Op;
 
 router.get('/:id',
@@ -83,16 +83,20 @@ router.post('/',
     async (req, res, next) => {
         if (req.files != null) {
             if (req.files.profilePicture) {
-                const fileName = uuid.v4();
+                const splitFileName = req.files.profilePicture.name.split('.');
+                const fileExtension = "." + splitFileName[splitFileName.length - 1];
+                const fileName = uuid.v4() + fileExtension;
                 await req.files.profilePicture.mv(mediaFolder + fileName);
 
-                await models.account.update(
-                    { profilePicturePath: fileName },
+                console.log(req.user.id);
+                const asd = await models.account.update(
+                    { profilepicturepath: fileName },
                     {
                         where: {
                             id: req.user.id
                         }
-                    }).catch(next)
+                    }).catch(next);
+                console.log(asd)
             }
         }
 

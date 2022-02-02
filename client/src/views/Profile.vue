@@ -7,7 +7,9 @@
       <div class="headerTopIcons">
         <i>
           <router-link to="/Profile"
-            ><img src="https://picsum.photos/99" alt="ProfilePicture"
+            ><img
+              v-bind:src="profileToShow.profilepicturepath"
+              alt="ProfilePicture"
           /></router-link>
         </i>
       </div>
@@ -90,6 +92,7 @@ export default {
       show2: false,
       show3: false,
       passwordCheck: null,
+      profileToShow: {},
       profile: {
         bio: null,
         userPic: null,
@@ -97,6 +100,13 @@ export default {
         newPassword: null,
       },
     };
+  },
+  async mounted() {
+    this.profileToShow = (await axios.get("/user/2")).data;
+    this.profileToShow.profilepicturepath =
+      axios.defaults.baseURL +
+      "/media/" +
+      this.profileToShow.profilepicturepath;
   },
   methods: {
     async logout() {

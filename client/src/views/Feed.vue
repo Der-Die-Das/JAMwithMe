@@ -100,7 +100,7 @@ export default {
     var resp =  await axios      
       .get("jam?jamID=" + response.data[X])
     this.jams.push(resp.data)
-      console.log(this.jams)
+     // console.log(this.jams)
       axios
       .get("user/" + this.jams[X].creator)
       .then((creatorResp)=> { 

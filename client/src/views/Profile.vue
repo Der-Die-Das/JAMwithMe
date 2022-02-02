@@ -35,6 +35,7 @@
               accept="image/*"
               label="Profile image"
               prepend-icon="mdi-image-outline"
+              @change="handleFileUpload($event)"
             ></v-file-input>
             <v-spacer></v-spacer>
           </form>
@@ -66,12 +67,7 @@
             @click:append="show3 = !show3"
             solo
           ></v-text-field>
-          <v-btn
-            @click="changeUserSettings"
-            block
-            color="secondary"
-            depressed
-          >
+          <v-btn @click="changeUserSettings" block color="secondary" depressed>
             CHANGE
           </v-btn>
 
@@ -107,12 +103,28 @@ export default {
       await axios.post("user/logout");
       this.$router.push("/login");
     },
+    handleFileUpload(event) {
+      console.log(event);
+      this.profile.userPic = event;
+    },
+
     async changeUserSettings() {
+      console.log(this.profile);
+      let formData = new FormData();
+
       if (this.profile.bio !== null) {
-        await axios.post("user", {
-          bio: this.profile.bio,
-        });
-      } if (this.profile.newPassword !== null) {
+        formData.append("bio", this.profile.bio);
+      }
+      if (this.profile.userPic !== null) {
+        formData.append("profilePicture", this.profile.userPic);
+      }
+      await axios.post("user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (this.profile.newPassword !== null) {
         if (this.profile.newPassword == this.passwordCheck) {
           axios.put("user/password", {
             oldPassword: this.profile.oldPassword,

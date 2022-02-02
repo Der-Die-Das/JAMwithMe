@@ -8,7 +8,7 @@ router.post('/request',
         var loggedInUser = req.user.id;
         var otherUser = req.body.userID;
         if (loggedInUser == otherUser) {
-            res.status(400).send('You can't add yourself as a friend.')
+            res.status(400).send('You can not add yourself as a friend.')
             return;
         }
         try {

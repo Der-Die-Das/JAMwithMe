@@ -31,7 +31,7 @@ services:
       # https://stackoverflow.com/a/32785014
       # - /usr/src/app/node_modules
   client:
-    build: clientVuetify
+    build: client
     ports:
     - "8080:8080"
   admin:

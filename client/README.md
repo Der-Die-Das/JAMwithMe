@@ -1,4 +1,4 @@
-# jamwithme
+# jamwithmeclient
 
 ## Project setup
 ```

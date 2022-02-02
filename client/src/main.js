@@ -1,46 +1,38 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
+import vuetify from './plugins/vuetify'
 import router from './router'
+require('dotenv').config()
+console.log(process.env)
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faSearch, faEllipsisH} from '@fortawesome/free-solid-svg-icons'
-import { faComment,faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons'
+import { faHome, faSearch, faEllipsisH, faUpload, faUndo, faRecordVinyl, faPause, faPlay} from '@fortawesome/free-solid-svg-icons'
+import { faComment,faHeart, faPaperPlane,faPauseCircle, faPlayCircle, faFolder, faImage } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(
-    faComment,
-    faHeart,
-    faHome,
-    faSearch,
-    faPaperPlane,
-    faEllipsisH
+  faComment,
+  faHeart,
+  faHome,
+  faSearch,
+  faPaperPlane,
+  faEllipsisH,
+  faUpload,
+  faPauseCircle,
+  faPlayCircle,
+  faPause,
+  faPlay,
+  faUndo,
+  faFolder,
+  faRecordVinyl,
+  faImage
   )
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
-  const routes = [
-    {
-      path: 'client/src/views/Feed.vue',
-      name: 'Feed',
-      component: Feed
-    },
-    {
-        path: './views/Jam',
-        name: 'Jam',
-        component: Jam
-    },
-    {
-      path: './views/search',
-      name: 'Search',
-      component: Search
-    },
+Vue.config.productionTip = false
 
-  ]
-  
-
-
-
-const app = new App({
-  router
+new Vue({
+  vuetify,
+  router,
+  render: h => h(App)
 }).$mount('#app')
-
-
-app.component('font-awesome-icon', FontAwesomeIcon)

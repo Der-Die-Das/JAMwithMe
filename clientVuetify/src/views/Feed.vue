@@ -15,7 +15,7 @@
     </div>
 
 
-    <div class="posts" v-for="idx in jams" v-bind:key="jams[idx]">
+    <div class="posts" v-for="jam in jams" :key="jam.id">
 
       <div class="post">
 
@@ -25,7 +25,7 @@
               <img src="https://picsum.photos/101" alt="ProfilePicture" />
             </div>
             <div class="postUserName">
-              {{jams[idx-1]}}
+              {{jam.creator}}
               </div>
           </div>
         </div>
@@ -82,39 +82,32 @@
 </template>
 
 <script>
-import axios from "axios";
+ import axios from "axios";
 
 export default {
   data() {
     return {
-      jams: [
-        {
-          id: null,
-          creator: null,
-          prejam: null,
-          thumbnailpath: null,
-          creationdate: null,
-          recordinginfos: [],
-        },
-      ],
+      jams: [],
     };
   },
   async mounted() {
-    await axios
+    this.jams = [];
+    var response= await axios
     .get("jam/all")
-    .then((response) => {
-      this.jams = response.data;
-    });
-    for (let X = 0; X < this.jams.length; X++) {
+    for (let X = 0; X < response.data.length; X++) {
     //  console.log(this.jams[X]);
-      await axios
-      .get("jam?jamID=" + this.jams[X])
-     .then((resp) => {
-        this.jams[X] = resp.data;
-            //  console.log(this.jams[X].creator);
-      });
-      //console.log(this.jams[1].creator)
+    
+    var resp =  await axios      
+      .get("jam?jamID=" + response.data[X])
+    this.jams.push(resp.data)
+      console.log(this.jams)
+      axios
+      .get("user/" + this.jams[X].creator)
+      .then((creatorResp)=> { 
+        this.jams[X].creator = creatorResp.data.username;})
+
     }
+    
   },
 };
 </script>

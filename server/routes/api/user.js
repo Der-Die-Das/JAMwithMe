@@ -7,46 +7,22 @@ const uuid = require('uuid');
 const mediaFolder = 'media/';
 const Op = require('sequelize').Op;
 
-router.get('/:id',
+router.get('/current',
     isAuth,
     async (req, res, next) => {
         var userObj = await models.account.findOne({
-            where: { id: req.params.id }, raw: true
+            where: { id: req.user.id }, raw: true
         }).catch(next)
         if (!userObj) {
-            res.status(404).send();
+            res.status(401).send();
             return;
         }
-        delete userObj.password;
         delete userObj.email;
         res.status(200).send(userObj);
     }
 );
 
-router.get('/',
-    isAuth,
-    async (req, res, next) => {
-        const usernamePattern = '%' + req.query.usernamePattern + '%';
-        var userObjects = await models.account.findAll({
-            where: {
-                username: {
-                    [Op.iLike]: usernamePattern
-                }
-            },
-            raw: true,
-            limit: 5
-        }).catch(next)
-        if (!userObjects) {
-            res.status(404).send();
-            return;
-        }
-        for (let i = 0; i < userObjects.length; i++) {
-            delete userObjects[i].password;
-            delete userObjects[i].email;
-        }
-        res.status(200).send(userObjects);
-    }
-);
+
 
 router.post('/login',
     passport.authenticate('local-login', { /*failureRedirect: '/login'*/ }),
@@ -143,5 +119,45 @@ router.put('/password',
     }
 )
 
+router.get('/:id',
+    isAuth,
+    async (req, res, next) => {
+        var userObj = await models.account.findOne({
+            where: { id: req.params.id }, raw: true
+        }).catch(next)
+        if (!userObj) {
+            res.status(404).send();
+            return;
+        }
+        delete userObj.password;
+        delete userObj.email;
+        res.status(200).send(userObj);
+    }
+);
+
+router.get('/',
+    isAuth,
+    async (req, res, next) => {
+        const usernamePattern = '%' + req.query.usernamePattern + '%';
+        var userObjects = await models.account.findAll({
+            where: {
+                username: {
+                    [Op.iLike]: usernamePattern
+                }
+            },
+            raw: true,
+            limit: 5
+        }).catch(next)
+        if (!userObjects) {
+            res.status(404).send();
+            return;
+        }
+        for (let i = 0; i < userObjects.length; i++) {
+            delete userObjects[i].password;
+            delete userObjects[i].email;
+        }
+        res.status(200).send(userObjects);
+    }
+);
 
 module.exports = router;

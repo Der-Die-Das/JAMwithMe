@@ -4,10 +4,10 @@
 		{
 			"type": "npm",
 			"script": "serve",
-			"path": "clientVuetify/",
+			"path": "client/",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: serve - clientVuetify",
+			"label": "npm: serve - client",
 			"detail": "vue-cli-service serve"
 		}
 	]

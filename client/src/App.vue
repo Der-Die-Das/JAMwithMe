@@ -38,7 +38,7 @@ export default {
   async mounted() {
     const vm = this;
     axios
-      .get("user")
+      .get("user/current")
       .then(function () {
       vm.$router.push("/feed").catch(()=>{});
       vm.loggedIn = true;

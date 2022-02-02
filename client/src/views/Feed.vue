@@ -41,8 +41,10 @@
           </div>
         </div>
         <div class="postIcons">
-          <i @click="likeJam(jam.id)">
-            <font-awesome-icon :icon="['far', 'heart']" />
+          <i>
+            <v-icon @click="likeJam(jam.liked, jam.id)">
+              {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
+            </v-icon>
           </i>
           <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
           <div class="directJam">
@@ -102,20 +104,32 @@ export default {
         this.jams[X].creator = creatorResp.data.username;
         //     this.jams[X].userPic = creatorResp.data.profilepicturepath;
       });
-      axios.get("jam/likes?jamID=" + this.jams[X].id).then((likeResp) => {
-        this.jams[X].likes = likeResp.data.likeCount;
+      // Problem: nur erster Post zeigt Likes an.
+      axios.get("jam/likes?jamID=" + this.jams[X].id).then((likesResp) => {
+        this.jams[X].likes = likesResp.data.likeCount;
+      });
+      axios.get("jam/liked?jamID=" + this.jams[X].id).then((likedResp) => {
+        this.jams[X].liked = likedResp.data.liked;
       });
     }
   },
 
   methods: {
-    likeJam(jamID) {
-      axios.post("jam/like", { jamID });
-    },
-    unLikeJam(jamID) {
-      axios.post("jam/unlike", { jamID });
+    // ToDo: Refresh vom LikeCounter / Like Symbol
+    likeJam(liked, jamID) {
+      if (liked) {
+        axios.post("jam/unlike", { jamID });
+      } else {
+        axios.post("jam/like", { jamID });
+      }
+        axios.get("jam/liked?jamID=" + this.jams[jamID].id).then((likedResp) => {
+        this.jams[jamID].liked = likedResp.data.liked;
+        console.log(this.jams[jamID].liked);
+      });
+
     },
     comment(jamID) {
+      // Problem: Erster SenBTN versendet Text vom zweiten Feld. Zweiter BTN funktioniert nicht.
       console.log(this.jams[jamID].vcomment);
       axios.post("comment/create", {
         jamID,

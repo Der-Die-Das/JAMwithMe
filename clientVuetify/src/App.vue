@@ -1,49 +1,57 @@
 <template>
-<v-app>
-  <div v-if="loggedIn">
-    <footer>
-      <span><router-link class="nav" to="/Feed"><font-awesome-icon icon="home" /></router-link></span>
-      <span><router-link class="nav" to="/Search"
-        ><font-awesome-icon icon="search"
-      /></router-link></span>
-      <span><router-link to="/Jam"><img src="./assets/icon.jpg" alt="jam" /></router-link></span>
-    </footer>
+  <v-app>
+    <div v-if="loggedIn">
+      <footer>
+        <span
+          ><router-link class="nav" to="/Feed"
+            ><font-awesome-icon icon="home" /></router-link
+        ></span>
+        <span
+          ><router-link class="nav" to="/Search"
+            ><font-awesome-icon icon="search" /></router-link
+        ></span>
+        <span
+          ><router-link to="/Jam"
+            ><img src="./assets/icon.jpg" alt="jam" /></router-link
+        ></span>
+      </footer>
     </div>
     <main role="main">
       <router-view />
     </main>
-</v-app>
+  </v-app>
 </template>
 
 <script>
 import axios from "axios";
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:3000/api/"
+axios.defaults.baseURL = "http://localhost:3000/api/";
 export default {
   name: "App",
-    data() {
+  data() {
     return {
-      loggedIn: true,
-    }
-    },
-    methods: {
-      login(variable) {
-        this.loggedIn = variable;
-      }
+      loggedIn: false,
+    };
+  },
 
-    },
-    async mounted (){
-      if(this.loggedIn == false) {
-              this.$router.push("/login")
-      }
-      else{
-// toDO
-      }
 
-    }
-
-}
-
+  async mounted() {
+    const vm = this;
+    axios
+      .get("user")
+      .then(function () {
+      vm.$router.push("/feed");
+      vm.loggedIn = true;
+      })
+      .catch(function (error) {
+        console.log(error.response.status); // 401
+        console.log(error.response.data.error); //Please Authenticate or whatever returned from server
+        if (error.response.status == 401) {
+          vm.$router.push("/login");
+        }
+      });
+  },
+};
 </script>
 
 <style>
@@ -200,7 +208,6 @@ footer {
 .nav {
   color: #333;
   align-items: center;
-
 }
 footer img {
   width: 32px;
@@ -209,10 +216,9 @@ footer img {
 }
 
 footer span {
-width: 32px;
-text-align: center;
+  width: 32px;
+  text-align: center;
 }
-
 
 .postComment {
   display: flex;
@@ -235,45 +241,39 @@ text-align: center;
   color: white;
   font-weight: 800;
   font-size: 8px;
-    width: 6%;
-    text-align: end;
-    white-space:nowrap;
-    margin-bottom: 20px;
+  width: 6%;
+  text-align: end;
+  white-space: nowrap;
+  margin-bottom: 20px;
 }
-
 
 .Title {
-font-weight: 700;
-margin: 15px;
-
+  font-weight: 700;
+  margin: 15px;
 }
-
-
 
 .recordingContentHeader {
   font-size: 14px;
   margin: auto;
   text-align: left;
-
 }
 
 .recordingTime {
-display: flex;
+  display: flex;
   vertical-align: center;
   justify-content: space-between;
 }
-.recordingTimeControl{
-
+.recordingTimeControl {
 }
-.recordingTimeControl span:nth-child(1){
+.recordingTimeControl span:nth-child(1) {
   position: relative;
   left: 35.3%;
 }
-.recordingTimeControl span:nth-child(2){
+.recordingTimeControl span:nth-child(2) {
   position: relative;
   left: 47.5%;
 }
-.recordingTimeControl span:nth-child(3){
+.recordingTimeControl span:nth-child(3) {
   position: relative;
   left: 59.5%;
 }
@@ -291,20 +291,19 @@ display: flex;
 }
 .recordingPan {
   vertical-align: center;
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
-.recordings{
+.recordings {
   z-index: 0;
 }
 
 .recordingSettingTitle {
   font-weight: 200;
   font-size: 12px;
-
 }
 .recordingSettingStartValue {
-    position: absolute;
+  position: absolute;
   font-weight: 200;
   font-size: 8px;
   margin-top: 26px;
@@ -313,21 +312,20 @@ display: flex;
   text-align: center;
 }
 
-.teest{
+.teest {
   text-align: right;
   font-weight: 200;
   font-size: 8px;
 }
 .recordingSettingEndValue {
-      position: absolute;
+  position: absolute;
   right: 12px;
   font-weight: 200;
   font-size: 8px;
   margin-top: 26px;
-    width: 40px;
-    text-align: center;
+  width: 40px;
+  text-align: center;
 }
-
 
 .newRecord {
   padding: 20px;
@@ -352,7 +350,6 @@ display: flex;
   margin-left: 15px;
   margin-right: 15px;
 }
-
 
 .postSettingText {
   border: none;
@@ -402,16 +399,16 @@ display: flex;
 .test2 {
   margin-top: 20px;
 }
-.test3{
+.test3 {
   width: 32px;
   height: 48px;
 }
 
-.test4{
+.test4 {
   color: aqua;
 }
 
-.time{
+.time {
   color: #eeeeee;
   display: flex;
   position: absolute;
@@ -421,21 +418,20 @@ display: flex;
   z-index: 95;
   width: 10%;
   font-size: 10px;
-  white-space:nowrap;
+  white-space: nowrap;
 }
 
-.search{
-margin-top: 15px;
-width: 90%;
-margin-left: auto;
-margin-right: auto;
+.search {
+  margin-top: 15px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.searchResults{
+.searchResults {
   margin-top: 40px;
 }
-.profileDescription{
+.profileDescription {
   margin-bottom: 20px;
 }
-
 </style>

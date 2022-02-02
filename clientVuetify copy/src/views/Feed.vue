@@ -5,13 +5,6 @@
         <img src="../assets/logo.png" alt="Logo" />
       </div>
       <div class="headerTopIcons">
-        <i
-          ><a href="#"
-            ><font-awesome-icon
-              :icon="['far', 'heart']"
-              style="color: black"
-              size="lg" /></a
-        ></i>
         <i>
           <router-link to="/Profile">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
@@ -19,6 +12,7 @@
         </i>
       </div>
     </div>
+
     <div class="posts">
       <div class="post">
         <div class="postHeader">
@@ -35,22 +29,18 @@
           <img src="https://picsum.photos/800/401" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl cyan-text"
+              class="postContentControl"
               prepend-icon="mdi-play"
-                        thumb-color="accent"
-              v-model="media"
-              color="accent"
-              track-color="accent"
               inverse-label
-          label="00:11 / 03:02"
-            >            
+              dark
+            >
             </v-slider>
+            <div class="time">00:10 / 03:10</div>
           </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -71,11 +61,12 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+          <v-textarea
+            label="Add comment..."
+            rows="1"
+            auto-grow
+            append-icon="mdi-send-circle-outline"
+          ></v-textarea>
         </div>
       </div>
       <div class="post">
@@ -92,22 +83,18 @@
           <img src="https://picsum.photos/800/402" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl cyan-text"
+              class="postContentControl"
               prepend-icon="mdi-play"
-                        thumb-color="accent"
-              v-model="media"
-              color="accent"
-              track-color="accent"
               inverse-label
-          label="00:11 / 03:02"
-            >            
+              dark
+            >
             </v-slider>
+            <div class="time">00:10 / 03:10</div>
           </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -128,11 +115,12 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+          <v-textarea
+            label="Add comment..."
+            rows="1"
+            auto-grow
+            append-icon="mdi-send-circle-outline"
+          ></v-textarea>
         </div>
       </div>
       <div class="post">
@@ -149,22 +137,18 @@
           <img src="https://picsum.photos/800/403" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
-              class="postContentControl cyan-text"
+              class="postContentControl"
               prepend-icon="mdi-play"
-                        thumb-color="accent"
-              v-model="media"
-              color="accent"
-              track-color="accent"
               inverse-label
-          label="00:11 / 03:02"
-            >            
+              dark
+            >
             </v-slider>
+            <div class="time">00:10 / 03:10</div>
           </div>
         </div>
         <div class="postIcons">
           <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
           <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'paper-plane']" /> </i>
           <div class="directJam">
             <router-link to="/Jam"
               ><img src="../assets/icon.jpg" alt="jam"
@@ -185,11 +169,12 @@
           <div class="postUserPic">
             <img src="https://picsum.photos/99" alt="ProfilePicture" />
           </div>
-          <input
-            class="postCommentText"
-            v-model="message"
-            placeholder="Add comment..."
-          />
+          <v-textarea
+            label="Add comment..."
+            rows="1"
+            auto-grow
+            append-icon="mdi-send-circle-outline"
+          ></v-textarea>
         </div>
       </div>
     </div>
@@ -197,6 +182,40 @@
 </template>
 
 <script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      jams: [
+        {
+          id: null,
+          creator: null,
+          prejam: null,
+          thumbnailpath: null,
+          creationdate: null,
+          recordinginfos: [],
+        },
+      ],
+    };
+  },
+  async mounted() {
+    await axios
+    .get("jam/all")
+    .then((response) => {
+      this.jams = response.data;
+    });
+    for (let X = 0; X < this.jams.length; X++) {
+      console.log(this.jams[X]);
+      await axios
+      .get("jam?jamID=" + this.jams[X])
+     .then((resp) => {
+        this.jams[X] = resp.data;
+              console.log(this.jams[X].creator);
+      });
+    }
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

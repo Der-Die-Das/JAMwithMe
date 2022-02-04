@@ -28,7 +28,8 @@
 
         <div class="postContent">
           <div></div>
-          <img src="https://picsum.photos/800/401" alt="PostImg" />
+          <!-- <img src="https://picsum.photos/800/401" alt="PostImg" /> -->
+          <img :src="jam.thumbnail" alt="PostImg" />
           <div class="postContentControl">
             <v-slider
               class="postContentControl"
@@ -107,13 +108,16 @@ export default {
       var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
       this.jams.push(fullJamInfo);
       this.jams[i].vcomment = "";
+      this.jams[i].thumbnail =
+        axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
+
       await axios.get("user/" + fullJamInfo.creator).then((creatorResp) => {
         Vue.set(this.jams[i], "creator", creatorResp.data.username);
         Vue.set(
           this.jams[i],
           "creatorPicture",
           axios.defaults.baseURL +
-            "/media/" +
+            "media/" +
             creatorResp.data.profilepicturepath
         );
       });

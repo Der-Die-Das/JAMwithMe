@@ -105,7 +105,7 @@ export default {
     this.profileToShow = (await axios.get("/user/2")).data;
     this.profileToShow.profilepicturepath =
       axios.defaults.baseURL +
-      "/media/" +
+      "media/" +
       this.profileToShow.profilepicturepath;
   },
   methods: {

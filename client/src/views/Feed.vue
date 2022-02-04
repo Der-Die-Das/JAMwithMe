@@ -7,7 +7,7 @@
       <div class="headerTopIcons">
         <i>
           <router-link to="/Profile">
-            <img src="https://picsum.photos/99" alt="ProfilePicture" />
+            <img :src="user.profilePicture" alt="ProfilePicture" />
           </router-link>
         </i>
       </div>
@@ -18,7 +18,7 @@
         <div class="postHeader">
           <div class="postUser">
             <div class="postUserPic">
-              <img src="https://picsum.photos/101" alt="ProfilePicture" />
+              <img :src="jam.creatorPicture" alt="ProfilePicture" />
             </div>
             <div class="postUserName">
               {{ jam.creator }}
@@ -65,7 +65,7 @@
         </div>
         <div class="postComment">
           <div class="postUserPic">
-            <img src="https://picsum.photos/99" alt="ProfilePicture" />
+            <img :src="user.profilePicture" alt="ProfilePicture" />
           </div>
           <v-textarea
             v-model="jam.vcomment"
@@ -83,57 +83,79 @@
 
 <script>
 import axios from "axios";
+import Vue from "vue";
 
 export default {
   data() {
     return {
       jams: [],
+      user: {},
     };
   },
 
   async mounted() {
-    this.jams = [];
-    var response = await axios.get("jam/all");
-    for (let X = 0; X < response.data.length; X++) {
-      //  console.log(this.jams[X]);
+    var currentLoggedInUser = (await axios.get("user/current")).data;
+    this.user = currentLoggedInUser;
+    this.user.profilePicture =
+      axios.defaults.baseURL +
+      "/media/" +
+      currentLoggedInUser.profilepicturepath;
 
-      var resp = await axios.get("jam?jamID=" + response.data[X]);
-      this.jams.push(resp.data);
-      // console.log(this.jams)
-      axios.get("user/" + this.jams[X].creator).then((creatorResp) => {
-        this.jams[X].creator = creatorResp.data.username;
-        //     this.jams[X].userPic = creatorResp.data.profilepicturepath;
+    this.jams = [];
+    var allJamIds = (await axios.get("jam/all")).data;
+    for (let i = 0; i < allJamIds.length; i++) {
+      var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
+      this.jams.push(fullJamInfo);
+      this.jams[i].vcomment = "";
+      await axios.get("user/" + fullJamInfo.creator).then((creatorResp) => {
+        Vue.set(this.jams[i], "creator", creatorResp.data.username);
+        Vue.set(
+          this.jams[i],
+          "creatorPicture",
+          axios.defaults.baseURL +
+            "/media/" +
+            creatorResp.data.profilepicturepath
+        );
       });
       // Problem: nur erster Post zeigt Likes an.
-      axios.get("jam/likes?jamID=" + this.jams[X].id).then((likesResp) => {
-        this.jams[X].likes = likesResp.data.likeCount;
-      });
-      axios.get("jam/liked?jamID=" + this.jams[X].id).then((likedResp) => {
-        this.jams[X].liked = likedResp.data.liked;
-      });
+      await axios
+        .get("jam/likes?jamID=" + this.jams[i].id)
+        .then((likesResp) => {
+          Vue.set(this.jams[i], "likes", likesResp.data.likeCount);
+        });
+      await axios
+        .get("jam/liked?jamID=" + this.jams[i].id)
+        .then((likedResp) => {
+          Vue.set(this.jams[i], "liked", likedResp.data.liked);
+        });
     }
   },
 
   methods: {
     // ToDo: Refresh vom LikeCounter / Like Symbol
-    likeJam(liked, jamID) {
+    async likeJam(liked, jamID) {
       if (liked) {
-        axios.post("jam/unlike", { jamID });
+        await axios.post("jam/unlike", { jamID });
       } else {
-        axios.post("jam/like", { jamID });
+        await axios.post("jam/like", { jamID });
       }
-        axios.get("jam/liked?jamID=" + this.jams[jamID].id).then((likedResp) => {
-        this.jams[jamID].liked = likedResp.data.liked;
-        console.log(this.jams[jamID].liked);
+      const element = this.jams.filter((x) => x.id == jamID)[0];
+      const jamIndex = this.jams.indexOf(element);
+      await axios.get("jam/liked?jamID=" + jamID).then((likedResp) => {
+        Vue.set(this.jams[jamIndex], "liked", likedResp.data.liked);
       });
-
+      await axios.get("jam/likes?jamID=" + jamID).then((likesResp) => {
+        Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
+      });
     },
     comment(jamID) {
+      const element = this.jams.filter((x) => x.id == jamID)[0];
+      const jamIndex = this.jams.indexOf(element);
       // Problem: Erster SenBTN versendet Text vom zweiten Feld. Zweiter BTN funktioniert nicht.
-      console.log(this.jams[jamID].vcomment);
+      console.log(this.jams[jamIndex].vcomment);
       axios.post("comment/create", {
         jamID,
-        comment: this.jams[jamID].vcomment,
+        comment: this.jams[jamIndex].vcomment,
       });
     },
   },

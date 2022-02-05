@@ -12,8 +12,8 @@
         </i>
       </div>
     </div>
-
-    <div class="posts" v-for="jam in jams" :key="jam.id">
+<div v-if="!isLoading">
+    <div class="posts"  v-for="jam in jams" :key="jam.id">
       <div class="post">
         <div class="postHeader">
           <div class="postUser">
@@ -80,6 +80,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -91,6 +92,7 @@ export default {
     return {
       jams: [],
       user: {},
+      isLoading: true,
     };
   },
 
@@ -111,7 +113,7 @@ export default {
       this.jams[i].thumbnail =
         axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
 
-      await axios.get("user/" + fullJamInfo.creator).then((creatorResp) => {
+      axios.get("user/" + fullJamInfo.creator).then((creatorResp) => {
         Vue.set(this.jams[i], "creator", creatorResp.data.username);
         Vue.set(
           this.jams[i],
@@ -122,17 +124,19 @@ export default {
         );
       });
       // Problem: nur erster Post zeigt Likes an.
-      await axios
+      axios
         .get("jam/likes?jamID=" + this.jams[i].id)
         .then((likesResp) => {
           Vue.set(this.jams[i], "likes", likesResp.data.likeCount);
         });
-      await axios
+      axios
         .get("jam/liked?jamID=" + this.jams[i].id)
         .then((likedResp) => {
           Vue.set(this.jams[i], "liked", likedResp.data.liked);
         });
     }
+
+    this.isLoading = false;
   },
 
   methods: {
@@ -145,10 +149,10 @@ export default {
       }
       const element = this.jams.filter((x) => x.id == jamID)[0];
       const jamIndex = this.jams.indexOf(element);
-      await axios.get("jam/liked?jamID=" + jamID).then((likedResp) => {
+      axios.get("jam/liked?jamID=" + jamID).then((likedResp) => {
         Vue.set(this.jams[jamIndex], "liked", likedResp.data.liked);
       });
-      await axios.get("jam/likes?jamID=" + jamID).then((likesResp) => {
+      axios.get("jam/likes?jamID=" + jamID).then((likesResp) => {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },

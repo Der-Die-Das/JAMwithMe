@@ -6,7 +6,8 @@
       </div>
       <div class="headerTopIcons">
         <i>
-           <router-link to="/Profile"><img src="https://picsum.photos/99" alt="ProfilePicture" /></router-link>
+          <router-link to="/Profile">  <img :src="user.profilePicture" alt="ProfilePicture" />
+          </router-link>
         </i>
       </div>
     </div>
@@ -85,7 +86,24 @@
 </template>
 
 <script>
+import axios from "axios";
 
+  export default {
+  data() {
+    return {
+            user: {},
+    };
+  },
+
+    async mounted() {
+    var currentLoggedInUser = (await axios.get("user/current")).data;
+    this.user = currentLoggedInUser;
+    this.user.profilePicture =
+      axios.defaults.baseURL +
+      "/media/" +
+      currentLoggedInUser.profilepicturepath;
+    },
+  }
 
 </script>
 

@@ -5,9 +5,9 @@
         <img src="../assets/logo.png" alt="Logo" />
       </div>
       <div class="headerTopIcons">
-
         <i>
-           <router-link to="/Profile"><img src="https://picsum.photos/99" alt="ProfilePicture" /></router-link>
+          <router-link to="/Profile">  <img :src="user.profilePicture" alt="ProfilePicture" />
+          </router-link>
         </i>
       </div>
     </div>
@@ -95,9 +95,11 @@
 
 
 <script>
+import axios from "axios";
   export default {
     data () {
       return {
+              user: {},
         isLoading: false,
         tab: null,
         model: null,
@@ -134,6 +136,16 @@ items: [
          
         },
       ],
+    };
+  },
+          async mounted() {
+    var currentLoggedInUser = (await axios.get("user/current")).data;
+    this.user = currentLoggedInUser;
+    this.user.profilePicture =
+      axios.defaults.baseURL +
+      "/media/" +
+      currentLoggedInUser.profilepicturepath;
+    },
         watch: {
       model (val) {
         if (val != null) this.tab = 0
@@ -158,9 +170,11 @@ items: [
       },
     },
   }
-      }
+      
+      
     
-  }
+
+  
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

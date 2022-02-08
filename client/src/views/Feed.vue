@@ -29,7 +29,7 @@
         <div class="postContent">
           <div></div>
           <!-- <img src="https://picsum.photos/800/401" alt="PostImg" /> -->
-          <img :src="jam.thumbnail" alt="PostImg" />
+          <img :src="jam.thumbnail" alt="PostImg" onerror="this.src='https://picsum.photos/400/200'"/>
           <div class="postContentControl">
             <v-slider
               class="postContentControl"

@@ -8,6 +8,7 @@
           name="username"
           label="username or email"
           type="text"
+          autocomplete="on"
           solo
         ></v-text-field>
         <v-text-field
@@ -16,6 +17,7 @@
           :type="show1 ? 'text' : 'password'"
           name="password"
           label="password"
+          autocomplete="current-password"
           @click:append="show1 = !show1"
           solo
         ></v-text-field>
@@ -76,8 +78,6 @@ export default {
           vm.$router.push("/feed");
         })
         .catch(function (error) {
-          console.log(error.response.status); // 401
-          console.log(error.response.data.error); //Please Authenticate or whatever returned from server
           if (error.response.status == 401) {
             //vm.$router.push("/register");
             vm.credentials.password = null;

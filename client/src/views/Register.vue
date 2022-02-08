@@ -10,6 +10,7 @@
           type="text"
           solo
           class="test"
+          autocomplete="on"
         ></v-text-field>
         <v-text-field
           v-model="credentials.email"
@@ -17,6 +18,7 @@
           label="email"
           type="text"
           solo
+          autocomplete="email"
           class="test"
         ></v-text-field>
         <v-text-field
@@ -25,6 +27,7 @@
           :type="show1 ? 'text' : 'password'"
           name="password"
           label="password"
+          autocomplete="current-password"
           @click:append="show1 = !show1"
           solo
         ></v-text-field>
@@ -34,6 +37,7 @@
           :type="show2 ? 'text' : 'password'"
           name="retype-password"
           label="retype password"
+          autocomplete="current-password"
           @click:append="show2 = !show2"
           solo
         ></v-text-field>
@@ -51,11 +55,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="(userErrorDialog = false)"
-          >
+          <v-btn color="primary" text @click="userErrorDialog = false">
             OK
           </v-btn>
         </v-card-actions>
@@ -68,16 +68,12 @@
         </v-card-title>
 
         <v-card-text>
-          your passwords do not match. please try again
+          Your passwords do not match. Please try again.
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="(passwordErrorDialog = false)"
-          >
+          <v-btn color="primary" text @click="passwordErrorDialog = false">
             OK
           </v-btn>
         </v-card-actions>

@@ -40,8 +40,9 @@ export default {
     axios
       .get("user/current")
       .then(function () {
+              vm.loggedIn = true;
       vm.$router.push("/feed").catch(()=>{});
-      vm.loggedIn = true;
+
       })
       .catch(function (error) {
      //   console.log(error.response.status); // 401

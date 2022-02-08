@@ -7,11 +7,9 @@
         </div>
         <div class="headerTopIcons">
           <i>
-            <router-link to="/Profile"
-              ><img
-                v-bind:src="profileToShow.profilepicturepath"
-                alt="ProfilePicture"
-            /></router-link>
+          <router-link to="/Profile">
+            <img :src="user.profilePicture" alt="ProfilePicture" />
+          </router-link>
           </i>
         </div>
       </div>
@@ -163,6 +161,7 @@ export default {
   data() {
     return {
       userInfo: false,
+            user: {},
       passwordErrorDialog: false,
       userInfosChanged: false,
       userPasswordChanged: false,
@@ -170,7 +169,6 @@ export default {
       show2: false,
       show3: false,
       passwordCheck: null,
-      profileToShow: {},
       profile: {
         bio: null,
         userPic: null,
@@ -188,12 +186,13 @@ export default {
       this.$router.push("/login");
     },
     async getUser() {
-      this.profileToShow = (await axios.get("/user/2")).data;
-      this.profileToShow.profilepicturepath =
-        axios.defaults.baseURL +
-        "media/" +
-        this.profileToShow.profilepicturepath;
-      this.profile.bio = this.profileToShow.bio;
+    var currentLoggedInUser = (await axios.get("user/current")).data;
+    this.user = currentLoggedInUser;
+    this.user.profilePicture =
+      axios.defaults.baseURL +
+      "/media/" +
+      currentLoggedInUser.profilepicturepath;
+      this.profile.bio = this.user.bio;
     },
     handleFileUpload(event) {
       console.log(event);
@@ -201,7 +200,7 @@ export default {
     },
     checkForm() {
       if (
-        (this.profile.bio !== this.profileToShow.bio &&
+        (this.profile.bio !== this.user.bio &&
           this.profile.bio.length <= 100) ||
         (this.profile.newPassword !== null && this.passwordCheck !== null) ||
         this.profile.userPic !== null
@@ -222,7 +221,7 @@ export default {
       let formData = new FormData();
 
       if (this.profile.bio !== null && this.profile.bio.length <= 100) {
-        if (this.profile.bio !== this.profileToShow.bio) {
+        if (this.profile.bio !== this.user.bio) {
           formData.append("bio", this.profile.bio);
         }
         if (this.profile.userPic !== null) {

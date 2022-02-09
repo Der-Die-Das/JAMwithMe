@@ -1,18 +1,7 @@
 <template>
   <div>
-    <div class="headerTop">
-      <div class="headerTopLogo">
-        <img src="../assets/logo.png" alt="Logo" />
-      </div>
-      <div class="headerTopIcons">
-        <i>
-          <router-link to="/Profile">
-            <img :src="user.profilePicture" alt="ProfilePicture" />
-          </router-link>
-        </i>
-      </div>
-    </div>
-
+    <vHeader />
+    <vFooter />
     <div v-if="editPost">
       <div class="postsSettings">
         <div class="postSetting">
@@ -30,20 +19,6 @@
                 v-model="postName"
                 :counter="10"
                 label="Name"
-                required
-                @change="checkForm()"
-              ></v-text-field>
-              <v-text-field
-                v-model="postGenre"
-                :counter="10"
-                label="Genre"
-                required
-                @change="checkForm()"
-              ></v-text-field>
-              <v-text-field
-                v-model="postTag"
-                :counter="32"
-                label="Tags"
                 required
                 @change="checkForm()"
               ></v-text-field>
@@ -187,16 +162,16 @@
   
   <script>
 import axios from "axios";
-
+import vFooter from "../components/vFooter"
+import vHeader from "../components/vHeader"
 export default {
+  components: {vFooter,vHeader},
   data() {
     return {
       editPost: false,
       user: {},
       form: false,
       postName: null,
-      postGenre: null,
-      postTag: null,
       postDescription: null,
       postImage: null,
       preJamID: null,
@@ -213,32 +188,24 @@ export default {
   },
 
   async mounted() {
-    var currentLoggedInUser = (await axios.get("user/current")).data;
-    this.user = currentLoggedInUser;
-    this.user.profilePicture =
-      axios.defaults.baseURL +
-      "/media/" +
-      currentLoggedInUser.profilepicturepath;
+    await axios.get("user/current").catch(function (error) {
+      if (error.response.status == 401) {
+        this.$router.push("/login").catch(() => {});
+      }
+    });
   },
   methods: {
     checkForm() {
       if (
-       ( this.postName &&
-        this.postGenre &&
-        this.postTag &&
+        this.postName &&
         this.postDescription &&
-        this.postImage)
-        &&
-       ( this.postName.length <= 10 &&
-        this.postGenre.length <= 10  &&
-        this.postTag.length <= 32  &&
-        this.postDescription.length <= 100)
+        this.postImage &&
+        this.postName.length <= 10 &&
+        this.postDescription.length <= 100
       ) {
         this.form = true;
-        console.log("true");
       } else {
         this.form = false;
-        console.log("false");
       }
     },
   },

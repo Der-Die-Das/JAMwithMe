@@ -3,8 +3,7 @@ import App from './App.vue'
 
 import vuetify from './plugins/vuetify'
 import router from './router'
-require('dotenv').config()
-console.log(process.env)
+
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faHome, faSearch, faEllipsisH, faUpload, faUndo, faRecordVinyl, faPause, faPlay} from '@fortawesome/free-solid-svg-icons'

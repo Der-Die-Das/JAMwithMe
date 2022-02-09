@@ -1,21 +1,5 @@
 <template>
   <v-app>
-    <div v-if="loggedIn">
-      <footer>
-        <span
-          ><router-link class="nav" to="/Feed"
-            ><font-awesome-icon icon="home" /></router-link
-        ></span>
-        <span
-          ><router-link class="nav" to="/Search"
-            ><font-awesome-icon icon="search" /></router-link
-        ></span>
-        <span
-          ><router-link to="/Jam"
-            ><img src="./assets/icon.jpg" alt="jam" /></router-link
-        ></span>
-      </footer>
-    </div>
     <main role="main">
       <router-view />
     </main>
@@ -30,28 +14,10 @@ export default {
   name: "App",
   data() {
     return {
-      loggedIn: false,
+
     };
   },
 
-
-  async mounted() {
-    const vm = this;
-    axios
-      .get("user/current")
-      .then(function () {
-              vm.loggedIn = true;
-      vm.$router.push("/feed").catch(()=>{});
-
-      })
-      .catch(function (error) {
-     //   console.log(error.response.status); // 401
-     //   console.log(error.response.data.error); //Please Authenticate or whatever returned from server
-        if (error.response.status == 401) {
-          vm.$router.push("/login").catch(()=>{});
-        }
-      });
-  },
 };
 </script>
 
@@ -116,7 +82,7 @@ header {
   margin-right: -10px;
 }
 .posts {
-  margin-bottom: 60px;
+  margin-bottom: 10px;
 }
 .postHeader {
   border-top: 1px solid var(--border);
@@ -434,6 +400,16 @@ footer span {
 }
 .profileDescription {
   margin-bottom: 20px;
+  margin-left: 15px;
+    width: 90%;
 }
+
+.profilePictureHeader{
+  margin-bottom: 20px;
+}
+.profilePictureHeader span{
+  margin-left: 15px;
+}
+
 </style>
 

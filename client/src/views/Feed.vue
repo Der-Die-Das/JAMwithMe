@@ -1,109 +1,114 @@
 <template>
-  <div>
-    <div class="headerTop">
-      <div class="headerTopLogo">
-        <img src="../assets/logo.png" alt="Logo" />
-      </div>
-      <div class="headerTopIcons">
-        <i>
-          <router-link to="/Profile">
-            <img :src="user.profilePicture" alt="ProfilePicture" />
-          </router-link>
-        </i>
-      </div>
-    </div>
-<div v-if="!isLoading">
-    <div class="posts"  v-for="jam in jams" :key="jam.id">
-      <div class="post">
-        <div class="postHeader">
-          <div class="postUser">
-            <div class="postUserPic">
-              <img :src="jam.creatorPicture" alt="ProfilePicture" />
-            </div>
-            <div class="postUserName">
-              {{ jam.creator }}
+  <div style="margin-bottom: 120px">
+    <vHeader />
+    <vFooter />
+    <div v-if="!isLoading">
+      <div class="posts" v-for="jam in jams" :key="jam.id">
+        <div class="post">
+          <div class="postHeader">
+            <div class="postUser">
+              <div class="postUserPic">
+                <img :src="jam.creatorPicture" alt="ProfilePicture" />
+              </div>
+              <div class="postUserName">
+                {{ jam.creator }}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="postContent">
-          <div></div>
-          <!-- <img src="https://picsum.photos/800/401" alt="PostImg" /> -->
-          <img :src="jam.thumbnail" alt="PostImg" onerror="this.src='https://picsum.photos/400/200'"/>
-          <div class="postContentControl">
-            <v-slider
-              class="postContentControl"
-              prepend-icon="mdi-play"
-              inverse-label
-              dark
-            >
-            </v-slider>
-            <div class="time">00:10 / 03:10</div>
+          <div class="postContent">
+            <div></div>
+            <!-- <img src="https://picsum.photos/800/401" alt="PostImg" /> -->
+            <img
+              :src="jam.thumbnail"
+              alt="PostImg"
+              onerror="this.src='https://picsum.photos/400/200'"
+            />
+            <div class="postContentControl">
+              <v-slider
+                class="postContentControl"
+                prepend-icon="mdi-play"
+                inverse-label
+                dark
+              >
+              </v-slider>
+              <div class="time">00:10 / 03:10</div>
+            </div>
           </div>
-        </div>
-        <div class="postIcons">
-          <i>
-            <v-icon @click="likeJam(jam.liked, jam.id)">
-              {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon>
-          </i>
-          <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <div class="directJam">
-            <router-link to="/Jam"
-              ><img src="../assets/icon.jpg" alt="jam"
-            /></router-link>
+          <div class="postIcons">
+            <i>
+              <v-icon @click="likeJam(jam.liked, jam.id)">
+                {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
+              </v-icon>
+            </i>
+            <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+            <div class="directJam">
+              <router-link to="/Jam"
+                ><img src="../assets/icon.jpg" alt="jam"
+              /></router-link>
+            </div>
           </div>
-        </div>
-        <div class="likeCounter">
-          <span>{{ jam.likes }} Likes</span>
-        </div>
-        <div class="postText">
-          <p>
-            <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-            <span class="hashtag"> #rock</span>
-          </p>
-        </div>
-        <div class="postComment">
-          <div class="postUserPic">
-            <img :src="user.profilePicture" alt="ProfilePicture" />
+          <div class="likeCounter">
+            <span>{{ jam.likes }} Likes</span>
           </div>
-          <v-textarea
-            v-model="jam.vcomment"
-            label="Add comment..."
-            rows="1"
-            auto-grow
-            append-icon="mdi-send-circle-outline"
-            @click:append="comment(jam.id)"
-          ></v-textarea>
+          <div class="postText">
+            <p>
+              <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
+              amet consectetur adipisicing elit.
+              <span class="hashtag"> #rock</span>
+            </p>
+          </div>
+          <div class="postComment">
+            <div class="postUserPic">
+              <img :src="user.profilePicture" alt="ProfilePicture" />
+            </div>
+            <v-textarea
+              v-model="jam.vcomment"
+              label="Add comment..."
+              rows="1"
+              auto-grow
+              append-icon="mdi-send-circle-outline"
+              @click:append="comment(jam)"
+            ></v-textarea>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Vue from "vue";
-
+import vFooter from "../components/vFooter";
+import vHeader from "../components/vHeader";
 export default {
+  components: { vFooter, vHeader },
   data() {
     return {
-      jams: [],
+      jams: [
+        {
+          vcomment: "",
+        },
+      ],
       user: {},
       isLoading: true,
     };
   },
 
   async mounted() {
-    var currentLoggedInUser = (await axios.get("user/current")).data;
+        await axios.get("user/current").catch(function (error) {
+      if (error.response.status == 401) {
+        this.$router.push("/login").catch(() => {});
+      }
+    });
+        var currentLoggedInUser = (await axios.get("user/current")).data;
     this.user = currentLoggedInUser;
     this.user.profilePicture =
       axios.defaults.baseURL +
       "/media/" +
       currentLoggedInUser.profilepicturepath;
-
+      
     this.jams = [];
     var allJamIds = (await axios.get("jam/all")).data;
     for (let i = 0; i < allJamIds.length; i++) {
@@ -124,23 +129,18 @@ export default {
         );
       });
       // Problem: nur erster Post zeigt Likes an.
-      axios
-        .get("jam/likes?jamID=" + this.jams[i].id)
-        .then((likesResp) => {
-          Vue.set(this.jams[i], "likes", likesResp.data.likeCount);
-        });
-      axios
-        .get("jam/liked?jamID=" + this.jams[i].id)
-        .then((likedResp) => {
-          Vue.set(this.jams[i], "liked", likedResp.data.liked);
-        });
+      axios.get("jam/likes?jamID=" + this.jams[i].id).then((likesResp) => {
+        Vue.set(this.jams[i], "likes", likesResp.data.likeCount);
+      });
+      axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
+        Vue.set(this.jams[i], "liked", likedResp.data.liked);
+      });
     }
 
     this.isLoading = false;
   },
 
   methods: {
-    // ToDo: Refresh vom LikeCounter / Like Symbol
     async likeJam(liked, jamID) {
       if (liked) {
         await axios.post("jam/unlike", { jamID });
@@ -156,15 +156,27 @@ export default {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },
-    comment(jamID) {
-      const element = this.jams.filter((x) => x.id == jamID)[0];
-      const jamIndex = this.jams.indexOf(element);
-      // Problem: Erster SenBTN versendet Text vom zweiten Feld. Zweiter BTN funktioniert nicht.
-      console.log(this.jams[jamIndex].vcomment);
-      axios.post("comment/create", {
-        jamID,
-        comment: this.jams[jamIndex].vcomment,
-      });
+    // async comment(jamID) {
+    //   const element = this.jams.filter((x) => x.id == jamID)[0];
+    //   const jamIndex = this.jams.indexOf(element);
+    //   if (this.jams[jamIndex].vcomment != "") {
+    //     // console.log(this.jams[jamIndex].vcomment);
+    //     await axios.post("comment/create", {
+    //       jamID,
+    //       comment: this.jams[jamIndex].vcomment,
+    //     });
+    //   }
+    //   this.jams[jamIndex].vcomment = "";
+    //   console.log(this.jams[jamIndex]);
+    // },
+    comment(jam) {
+      if (jam.vcomment != "") {
+        axios.post("comment/create", {
+          jamID: jam.id,
+          comment: jam.vcomment,
+        });
+        (jam.vcomment = ""), Vue.delete(jam, "vcomment");
+      }
     },
   },
 };

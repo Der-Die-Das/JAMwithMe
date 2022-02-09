@@ -1,210 +1,83 @@
 <template>
-  <div>
-    <div class="headerTop">
-      <div class="headerTopLogo">
-        <img src="../assets/logo.png" alt="Logo" />
-      </div>
-      <div class="headerTopIcons">
-        <i>
-          <router-link to="/Profile">  <img :src="user.profilePicture" alt="ProfilePicture" />
-          </router-link>
-        </i>
-      </div>
+  <div style="margin-bottom: 120px">
+    <vHeader />
+    <vFooter />
+    <div class="profilePictureHeader">
+    <span  >
+      <v-avatar>
+        <img :src="creator.creatorPicture" alt="PP" />
+      </v-avatar>
+    </span>
+    <span class="title"> {{ user.username }}</span>
     </div>
-    <div class="profileDescription">
-      <v-row
-      align="center">
-      <v-col cols="2">
-        <v-avatar>
-            <img src="https://picsum.photos/81" alt="ProfilePicture" />
-        </v-avatar>
-      </v-col>
-      <v-col cols="10">
-        <h3>Profilename</h3>
-      </v-col>
-<v-col
-cols="2"></v-col>
-      <v-col
-      cols="9">
-      Beschreibung vom Profil etc.
-      Beschreibung vom Profil etc.
-      Beschreibung vom Profil etc.
-      Beschreibung vom Profil etc.
-
-      </v-col>
-</v-row>
-
-
-    </div>
-    <div class="posts">
-            <div class="post">
-        <div class="postHeader">
-          <div class="postUser">
-            <div class="postUserPic">
-              <img src="https://picsum.photos/101" alt="ProfilePicture" />
-            </div>
-            <div class="postUserName">Testbenutzer</div>
-          </div>
-        </div>
-
-        <div class="postContent">
-          <div></div>
-          <img src="https://picsum.photos/800/401" alt="PostImg" />
-          <div class="postContentControl">
-            <v-slider
-              class="postContentControl"
-              prepend-icon="mdi-play"
-              v-model="media"
-              inverse-label
-          dark
-            >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
-          </div>
-
-        </div>
-        <div class="postIcons">
-          <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <div class="directJam">
-            <router-link to="/Jam"
-              ><img src="../assets/icon.jpg" alt="jam"
-            /></router-link>
-          </div>
-        </div>
-        <div class="likeCounter">
-          <span>100 Likes</span>
-        </div>
-        <div class="postText">
-          <p>
-            <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-            <span class="hashtag"> #rock</span>
-          </p>
-        </div>
-        <div class="postComment">
-          <div class="postUserPic">
-            <img src="https://picsum.photos/99" alt="ProfilePicture" />
-          </div>
-    <v-textarea
-      label="Add comment..."
-      rows="1"
-      auto-grow
-      :value="value"
-            append-icon="mdi-send-circle-outline"
-    ></v-textarea>
-        </div>
+    <div>
+      <div class="profileDescription">
+        <div>{{ user.bio }}</div>
       </div>
-      <div class="post">
-        <div class="postHeader">
-          <div class="postUser">
-            <div class="postUserPic">
-              <img src="https://picsum.photos/101" alt="ProfilePicture" />
+      <div class="posts" v-for="jam in jams" :key="jam.id">
+        <div class="post">
+          <div class="postHeader">
+            <div class="postUser">
+              <div class="postUserPic">
+              </div>
             </div>
-            <div class="postUserName">Testbenutzer</div>
           </div>
-        </div>
 
-        <div class="postContent">
-          <img src="https://picsum.photos/800/402" alt="PostImg" />
-          <div class="postContentControl">
-            <v-slider
-              class="postContentControl"
-              prepend-icon="mdi-play"
-              v-model="media"
-              inverse-label
-          dark
-            >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
-          </div>
-        </div>
-        <div class="postIcons">
-          <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <div class="directJam">
-            <router-link to="/Jam"
-              ><img src="../assets/icon.jpg" alt="jam"
-            /></router-link>
-          </div>
-        </div>
-        <div class="likeCounter">
-          <span>100 Likes</span>
-        </div>
-        <div class="postText">
-          <p>
-            <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-            <span class="hashtag"> #rock</span>
-          </p>
-        </div>
-        <div class="postComment">
-          <div class="postUserPic">
-            <img src="https://picsum.photos/99" alt="ProfilePicture" />
-          </div>
-    <v-textarea
-      label="Add comment..."
-      rows="1"
-      auto-grow
-      :value="value"
-            append-icon="mdi-send-circle-outline"
-    ></v-textarea>
-        </div>
-      </div>
-      <div class="post">
-        <div class="postHeader">
-          <div class="postUser">
-            <div class="postUserPic">
-              <img src="https://picsum.photos/101" alt="ProfilePicture" />
+          <div class="postContent">
+            <div></div>
+
+            <img
+              :src="jam.thumbnail"
+              alt="PostImg"
+              onerror="this.src='https://picsum.photos/400/200'"
+            />
+            <div class="postContentControl">
+              <v-slider
+                class="postContentControl"
+                prepend-icon="mdi-play"
+                inverse-label
+                dark
+              >
+              </v-slider>
+              <div class="time">00:10 / 03:10</div>
             </div>
-            <div class="postUserName">Testbenutzer</div>
           </div>
-        </div>
-
-        <div class="postContent">
-          <img src="https://picsum.photos/800/403" alt="PostImg" />
-          <div class="postContentControl">
-            <v-slider
-              class="postContentControl"
-              prepend-icon="mdi-play"
-              v-model="media"
-              inverse-label
-          dark
-            >            
-            </v-slider>           
-                      <div class="time"> 00:10 / 03:10</div>
+          <div class="postIcons">
+            <i>
+              <v-icon @click="likeJam(jam.liked, jam.id)">
+                {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
+              </v-icon>
+            </i>
+            <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+            <div class="directJam">
+              <router-link to="/Jam"
+                ><img src="../assets/icon.jpg" alt="jam"
+              /></router-link>
+            </div>
           </div>
-        </div>
-        <div class="postIcons">
-          <i> <font-awesome-icon :icon="['far', 'heart']" /> </i>
-          <i> <font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <div class="directJam">
-            <router-link to="/Jam"
-              ><img src="../assets/icon.jpg" alt="jam"
-            /></router-link>
+          <div class="likeCounter">
+            <span>{{ jam.likes }} Likes</span>
           </div>
-        </div>
-        <div class="likeCounter">
-          <span>100 Likes</span>
-        </div>
-        <div class="postText">
-          <p>
-            <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-            <span class="hashtag"> #rock</span>
-          </p>
-        </div>
-        <div class="postComment">
-          <div class="postUserPic">
-            <img src="https://picsum.photos/99" alt="ProfilePicture" />
+          <div class="postText">
+            <p>
+              <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
+              amet consectetur adipisicing elit.
+              <span class="hashtag"> #rock</span>
+            </p>
           </div>
-    <v-textarea
-      label="Add comment..."
-      rows="1"
-      auto-grow
-      :value="value"
-      append-icon="mdi-send-circle-outline"
-    ></v-textarea>
+          <div class="postComment">
+            <div class="postUserPic">
+              <img :src="user.profilePicture" alt="ProfilePicture" />
+            </div>
+            <v-textarea
+              v-model="jam.vcomment"
+              label="Add comment..."
+              rows="1"
+              auto-grow
+              append-icon="mdi-send-circle-outline"
+              @click:append="comment(jam)"
+            ></v-textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -213,23 +86,102 @@ cols="2"></v-col>
 
 <script>
 import axios from "axios";
+import Vue from "vue";
+import vFooter from "../components/vFooter";
+import vHeader from "../components/vHeader";
 
-  export default {
+export default {
+  components: { vFooter, vHeader },
   data() {
     return {
-            user: {},
+      creator: {},
+      user: {},
+            jams: [
+        {
+          vcomment: "",
+        },
+            ],
+      testUser :16,
+      testJamUser: 2,
     };
   },
 
-    async mounted() {
-    var currentLoggedInUser = (await axios.get("user/current")).data;
+  async mounted() {
+    await axios.get("user/current").catch(function (error) {
+      if (error.response.status == 401) {
+        this.$router.push("/login").catch(() => {});
+      }
+    });
+
+            var currentLoggedInUser = (await axios.get("user/current")).data;
     this.user = currentLoggedInUser;
     this.user.profilePicture =
       axios.defaults.baseURL +
       "/media/" +
       currentLoggedInUser.profilepicturepath;
+      
+
+    await axios.get("user/"+this.testUser).then((creatorResp) => {
+      this.creator = creatorResp.data;
+
+      Vue.set(
+        this.creator,
+        "creatorPicture",
+        axios.defaults.baseURL + "media/" + this.creator.profilepicturepath
+      );
+    });
+
+ this.jams = [];
+    var allJamIds = (await axios.get("jam/all")).data;
+    for (let i = 0; i < allJamIds.length; i++) {
+      var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
+      this.jams.push(fullJamInfo);
+      this.jams[i].vcomment = "";
+      this.jams[i].thumbnail =
+        axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
+    }
+  },
+methods: {
+    async likeJam(liked, jamID) {
+      if (liked) {
+        await axios.post("jam/unlike", { jamID });
+      } else {
+        await axios.post("jam/like", { jamID });
+      }
+      const element = this.jams.filter((x) => x.id == jamID)[0];
+      const jamIndex = this.jams.indexOf(element);
+      axios.get("jam/liked?jamID=" + jamID).then((likedResp) => {
+        Vue.set(this.jams[jamIndex], "liked", likedResp.data.liked);
+      });
+      axios.get("jam/likes?jamID=" + jamID).then((likesResp) => {
+        Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
+      });
     },
-  }
+    // async comment(jamID) {
+    //   const element = this.jams.filter((x) => x.id == jamID)[0];
+    //   const jamIndex = this.jams.indexOf(element);
+    //   if (this.jams[jamIndex].vcomment != "") {
+    //     // console.log(this.jams[jamIndex].vcomment);
+    //     await axios.post("comment/create", {
+    //       jamID,
+    //       comment: this.jams[jamIndex].vcomment,
+    //     });
+    //   }
+    //   this.jams[jamIndex].vcomment = "";
+    //   console.log(this.jams[jamIndex]);
+    // },
+    comment(jam) {
+      if (jam.vcomment != "") {
+        axios.post("comment/create", {
+          jamID: jam.id,
+          comment: jam.vcomment,
+        });
+        (jam.vcomment = ""), Vue.delete(jam, "vcomment");
+      }
+    },
+  },
+};
+
 
 </script>
 

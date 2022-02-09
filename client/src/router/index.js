@@ -2,13 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Feed from '../views/Feed.vue'
 import Jam from '../views/Jam.vue'
-import Post from '../views/Post.vue'
+//import Post from '../views/Post.vue'
 import Search from '../views/Search.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Profile from '../views/Profile.vue'
 import otherProfile from '../views/otherProfile.vue'
-import Tag from '../views/Tag.vue'
+//import Tag from '../views/Tag.vue'
 
 
 Vue.use(VueRouter)
@@ -24,11 +24,11 @@ const routes = [
     name: 'Jam',
     component: Jam
   },
-    {
-    path: '/Post',
-    name: 'Post',
-    component: Post
-  },
+  //   {
+  //   path: '/Post',
+  //   name: 'Post',
+  //   component: Post
+  // },
     {
     path: '/Search',
     name: 'Search',
@@ -55,11 +55,11 @@ const routes = [
     name: 'otherProfile',
     component: otherProfile
   },
-  {
-    path: '/tag',
-    name: 'tag',
-    component: Tag
-  }
+  // {
+  //   path: '/tag',
+  //   name: 'tag',
+  //   component: Tag
+  // }
 ]
 
 const router = new VueRouter({

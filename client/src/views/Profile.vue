@@ -1,25 +1,22 @@
 <template>
-  <v-container>
+  <v-container fluid class="py-0 px-0">
+    <vHeader />
+    <vFooter />
+ <div class="profilePictureHeader">
+    <span  >
+      <v-avatar>
+        <img :src="user.userPicture" alt="PP" />
+      </v-avatar>
+    </span>
+    <span class="title"> {{ user.username }}</span>
+    </div>
     <div>
-      <div class="headerTop">
-        <div class="headerTopLogo">
-          <img src="../assets/logo.png" alt="Logo" />
-        </div>
-        <div class="headerTopIcons">
-          <i>
-          <router-link to="/Profile">
-            <img :src="user.profilePicture" alt="ProfilePicture" />
-          </router-link>
-          </i>
-        </div>
-      </div>
-
       <div class="postsSettings">
         <div class="postSetting">
           <div class="postSettingsHeader">
             <div class="Title">Edit Profile</div>
           </div>
-          <div class="Title">profileXX</div>
+
           <div class="postSettingContent">
             <form>
               <v-textarea
@@ -157,11 +154,14 @@
 
 <script>
 import axios from "axios";
+import vFooter from "../components/vFooter";
+import vHeader from "../components/vHeader";
 export default {
+  components: { vFooter, vHeader },
   data() {
     return {
       userInfo: false,
-            user: {},
+      user: {},
       passwordErrorDialog: false,
       userInfosChanged: false,
       userPasswordChanged: false,
@@ -178,6 +178,12 @@ export default {
     };
   },
   async mounted() {
+    const vm = this;
+    axios.get("user/current").catch(function (error) {
+      if (error.response.status == 401) {
+        vm.$router.push("/login").catch(() => {});
+      }
+    });
     this.getUser();
   },
   methods: {
@@ -186,12 +192,12 @@ export default {
       this.$router.push("/login");
     },
     async getUser() {
-    var currentLoggedInUser = (await axios.get("user/current")).data;
-    this.user = currentLoggedInUser;
-    this.user.profilePicture =
-      axios.defaults.baseURL +
-      "/media/" +
-      currentLoggedInUser.profilepicturepath;
+      var currentLoggedInUser = (await axios.get("user/current")).data;
+      this.user = currentLoggedInUser;
+      this.user.userPicture =
+        axios.defaults.baseURL +
+        "/media/" +
+        currentLoggedInUser.profilepicturepath;
       this.profile.bio = this.user.bio;
     },
     handleFileUpload(event) {

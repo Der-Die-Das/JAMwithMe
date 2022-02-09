@@ -1,16 +1,7 @@
 <template>
   <div>
-    <div class="headerTop">
-      <div class="headerTopLogo">
-        <img src="../assets/logo.png" alt="Logo" />
-      </div>
-      <div class="headerTopIcons">
-        <i>
-          <router-link to="/Profile">  <img :src="user.profilePicture" alt="ProfilePicture" />
-          </router-link>
-        </i>
-      </div>
-    </div>
+    <vHeader />
+    <vFooter />
     <div class="Title">
         #rock
     </div>
@@ -191,8 +182,10 @@
 
 <script>
 import axios from "axios";
-
-  export default {
+import vFooter from "../components/vFooter"
+import vHeader from "../components/vHeader"
+export default {
+  components: {vFooter,vHeader},
   data() {
     return {
             user: {},
@@ -200,7 +193,13 @@ import axios from "axios";
   },
 
     async mounted() {
-    var currentLoggedInUser = (await axios.get("user/current")).data;
+    var currentLoggedInUser = (
+      await axios.get("user/current").catch(function (error) {
+        if (error.response.status == 401) {
+          this.$router.push("/login").catch(() => {});
+        }
+      })
+    ).data;
     this.user = currentLoggedInUser;
     this.user.profilePicture =
       axios.defaults.baseURL +

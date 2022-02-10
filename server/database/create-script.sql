@@ -23,6 +23,8 @@ CREATE TABLE Friends (
 
 CREATE TABLE Jam(
     ID SERIAL PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Description VARCHAR(255) NOT NULL,
     Creator INTEGER NOT NULL,
     PreJam INTEGER,
     ThumbnailPath VARCHAR(255),

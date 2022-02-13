@@ -30,6 +30,7 @@
                 prepend-icon="mdi-play"
                 inverse-label
                 dark
+                @click="playJam(jam)"
               >
               </v-slider>
               <div class="time">00:10 / 03:10</div>
@@ -82,6 +83,10 @@ import axios from "axios";
 import Vue from "vue";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+import tone from "../functions/tone";
+
+var jamPlayers = new tone.JamPlayers(axios.defaults.baseURL + "media/");
+
 export default {
   components: { vFooter, vHeader },
   data() {
@@ -97,18 +102,18 @@ export default {
   },
 
   async mounted() {
-        await axios.get("user/current").catch(function (error) {
+    await axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
         this.$router.push("/login").catch(() => {});
       }
     });
-        var currentLoggedInUser = (await axios.get("user/current")).data;
+    var currentLoggedInUser = (await axios.get("user/current")).data;
     this.user = currentLoggedInUser;
     this.user.profilePicture =
       axios.defaults.baseURL +
       "/media/" +
       currentLoggedInUser.profilepicturepath;
-      
+
     this.jams = [];
     var allJamIds = (await axios.get("jam/all")).data;
     for (let i = 0; i < allJamIds.length; i++) {
@@ -135,6 +140,8 @@ export default {
       axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
+
+      jamPlayers.loadJam(fullJamInfo);
     }
 
     this.isLoading = false;
@@ -156,19 +163,6 @@ export default {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },
-    // async comment(jamID) {
-    //   const element = this.jams.filter((x) => x.id == jamID)[0];
-    //   const jamIndex = this.jams.indexOf(element);
-    //   if (this.jams[jamIndex].vcomment != "") {
-    //     // console.log(this.jams[jamIndex].vcomment);
-    //     await axios.post("comment/create", {
-    //       jamID,
-    //       comment: this.jams[jamIndex].vcomment,
-    //     });
-    //   }
-    //   this.jams[jamIndex].vcomment = "";
-    //   console.log(this.jams[jamIndex]);
-    // },
     comment(jam) {
       if (jam.vcomment != "") {
         axios.post("comment/create", {
@@ -176,6 +170,18 @@ export default {
           comment: jam.vcomment,
         });
         (jam.vcomment = ""), Vue.delete(jam, "vcomment");
+      }
+    },
+    playJam(jam) {
+      if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
+        console.log("resume");
+        jamPlayers.resume();
+      } else if (!jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
+        jamPlayers.pause();
+        console.log("pause");
+      } else {
+        jamPlayers.play(jam.id);
+        console.log("play");
       }
     },
   },

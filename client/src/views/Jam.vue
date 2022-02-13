@@ -6,7 +6,7 @@
       <div class="postsSettings">
         <div class="postSetting">
           <div class="postSettingsHeader">
-            <span class="Title">Edit Post</span>
+            <span class="newTitle">Edit Post</span>
             <span
               style="float: right; margin-right: 10px"
               @click="editPost = false"
@@ -16,16 +16,16 @@
           <div class="postSettingContent">
             <form>
               <v-text-field
-                v-model="postName"
+                v-model="newTitle"
                 :counter="10"
                 label="Name"
                 required
                 @change="checkForm()"
               ></v-text-field>
               <v-textarea
-                v-model="postDescription"
+                v-model="newDescription"
                 name="input-7-1"
-                label="Description"
+                label="newDescription"
                 value=""
                 counter="100"
                 auto-grow
@@ -41,7 +41,13 @@
               ></v-file-input>
               <v-spacer></v-spacer>
             </form>
-            <v-btn block color="secondary" :disabled="!form" depressed>
+            <v-btn
+              @click="postNewJam()"
+              block
+              color="secondary"
+              :disabled="!form"
+              depressed
+            >
               Post
             </v-btn>
           </div>
@@ -49,9 +55,9 @@
       </div>
     </div>
     <div v-else>
-      <div class="Title">new Recording</div>
+      <div class="newTitle">new Recording</div>
       <v-expansion-panels class="recordings">
-        <v-expansion-panel v-for="(item, i) in 5" :key="i">
+        <v-expansion-panel>
           <v-expansion-panel-header>
             <span class="recordingContentHeader">RecordingXX</span>
           </v-expansion-panel-header>
@@ -94,8 +100,14 @@
                   <span>Vol</span>
                 </v-col>
                 <v-col cols="10">
-                  <div class="recordingVol">
-                    <v-slider> </v-slider>
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos.volume"
+                      min="-30"
+                      max="10"
+                      thumb-label
+                    >
+                    </v-slider>
                   </div>
                 </v-col>
                 <v-col> </v-col>
@@ -106,8 +118,32 @@
                   <span>Bass</span>
                 </v-col>
                 <v-col cols="10">
-                  <div class="recordingBass">
-                    <v-slider> </v-slider>
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos.bass"
+                      min="-10"
+                      max="10"
+                      thumb-label
+                    >
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col> </v-col>
+                <v-col> </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Mid</span>
+                </v-col>
+                <v-col cols="10">
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos.middle"
+                      min="-10"
+                      max="10"
+                      thumb-label
+                      >>
+                    </v-slider>
                   </div>
                 </v-col>
                 <v-col> </v-col>
@@ -118,8 +154,14 @@
                   <span>Treble</span>
                 </v-col>
                 <v-col cols="10">
-                  <div class="recordingTreble">
-                    <v-slider> </v-slider>
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos.treble"
+                      min="-10"
+                      max="10"
+                      thumb-label
+                      >>
+                    </v-slider>
                   </div>
                 </v-col>
                 <v-col> </v-col>
@@ -132,7 +174,14 @@
                 <v-col><span class="recordingSettingStartValue">L</span></v-col>
                 <v-col cols="10">
                   <div class="recordingTime">
-                    <v-slider> </v-slider>
+                    <v-slider
+                      v-model="recordingInfos.pan"
+                      min="-1"
+                      max="1"
+                      step="0.1"
+                      thumb-label
+                      >>
+                    </v-slider>
                   </div>
                 </v-col>
                 <v-col>
@@ -146,7 +195,7 @@
       </v-expansion-panels>
 
       <div class="recordings"></div>
-      <div class="newRecord">
+      <div class="newRecord" @click="handleFileUpload()">
         <font-awesome-icon
           :icon="['far', 'folder']"
           style="color: black"
@@ -155,6 +204,12 @@
         <img src="../assets/record.svg" alt="" />
 
         <img src="../assets/upload.svg" alt="" @click="editPost = true" />
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          @change="onFileChanged"
+        />
       </div>
     </div>
   </div>
@@ -162,27 +217,36 @@
   
   <script>
 import axios from "axios";
-import vFooter from "../components/vFooter"
-import vHeader from "../components/vHeader"
+import vFooter from "../components/vFooter";
+import vHeader from "../components/vHeader";
 export default {
-  components: {vFooter,vHeader},
+  components: { vFooter, vHeader },
   data() {
     return {
+      isSelecting: false,
       editPost: false,
       user: {},
       form: false,
-      postName: null,
-      postDescription: null,
+      rawRecording: "null",
+      newjamID: null,
+      newCreator: null,
+      newTitle: null,
+      newDescription: null,
+      preJam: null,
       postImage: null,
-      preJamID: null,
+      newCreationDate: null,
+      preJamID: "1",
       recordingInfos: [
-        // jam = "asdf",
-        // recording = "0",
-        // volume = "0",
-        // pan = "0",
-        // middle = "0",
-        // bass = "0",
-        // treble = "0",
+        {
+          id: "",
+          jam: "",
+          recording: "",
+          volume: "0",
+          pan: "0",
+          bass: "0",
+          middle: "0",
+          treble: "0",
+        },
       ],
     };
   },
@@ -197,16 +261,58 @@ export default {
   methods: {
     checkForm() {
       if (
-        this.postName &&
-        this.postDescription &&
+        this.newTitle &&
+        this.newDescription &&
         this.postImage &&
-        this.postName.length <= 10 &&
-        this.postDescription.length <= 100
+        this.newTitle.length <= 10 &&
+        this.newDescription.length <= 100
       ) {
         this.form = true;
       } else {
         this.form = false;
       }
+    },
+    handleFileUpload() {
+      this.isSelecting = true;
+
+      // After obtaining the focus when closing the FilePicker, return the button state to normal
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        { once: true }
+      );
+
+      // Trigger click on the FileInput
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      this.rawRecording = e.target.files[0];
+      this.handleFileUpload(this.rawRecording)
+                  console.log(this.rawRecording);
+
+      // Do whatever you need with the file, liek reading it with FileReader
+    },
+
+    updateRecordingSettings() {
+      console.log(this.recordingInfos);
+    },
+    async postNewJam() {
+      let arrayOfFiles = [this.rawRecording, this.postImage];
+      let formData = new FormData();
+      arrayOfFiles.forEach((file) => {
+        formData.append("arrayOfFilesName", file);
+      });
+      formData.append("preJamID", this.preJamID);
+      formData.append("recordingInfos", this.recordingInfos);
+
+      console.log(formData);
+      await axios.post("jam/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
   },
 };

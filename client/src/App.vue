@@ -244,6 +244,11 @@ footer span {
   position: relative;
   left: 59.5%;
 }
+.recordingSettings {
+  display: flex;
+  vertical-align: center;
+}
+
 .recordingVol {
   display: flex;
   vertical-align: center;

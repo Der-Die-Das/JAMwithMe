@@ -4,7 +4,7 @@ const mediaFolder = 'media/';
 const resolve = require('path').resolve
 
 router.get('/:path',
-    isAuth,
+    // isAuth,
     async (req, res, next) => {
         const filename = req.params.path;
         res.sendFile(resolve(mediaFolder + filename));

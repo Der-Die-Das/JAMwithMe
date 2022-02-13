@@ -235,12 +235,9 @@ export default {
       preJam: null,
       postImage: null,
       newCreationDate: null,
-      preJamID: "1",
+      preJamID: null,
       recordingInfos: [
         {
-          id: "",
-          jam: "",
-          recording: "",
           volume: "0",
           pan: "0",
           bass: "0",
@@ -289,8 +286,8 @@ export default {
     },
     onFileChanged(e) {
       this.rawRecording = e.target.files[0];
-      this.handleFileUpload(this.rawRecording)
-                  console.log(this.rawRecording);
+      this.handleFileUpload(this.rawRecording);
+      console.log(this.rawRecording);
 
       // Do whatever you need with the file, liek reading it with FileReader
     },
@@ -299,15 +296,17 @@ export default {
       console.log(this.recordingInfos);
     },
     async postNewJam() {
-      let arrayOfFiles = [this.rawRecording, this.postImage];
       let formData = new FormData();
-      arrayOfFiles.forEach((file) => {
-        formData.append("arrayOfFilesName", file);
-      });
-      formData.append("preJamID", this.preJamID);
-      formData.append("recordingInfos", this.recordingInfos);
+      formData.append("rawrecording", this.rawRecording);
+      formData.append("thumbnail", this.postImage);
+      formData.append("title", this.newTitle);
+      formData.append("description", this.newDescription);
+      if (this.preJamID != null) formData.append("preJamID", this.preJamID);
+      // formData.append("recordinginfos", [this.recordingInfos]);
+      formData.append("recordinginfos", JSON.stringify(this.recordingInfos));
 
       console.log(formData);
+      console.log(this.recordingInfos);
       await axios.post("jam/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

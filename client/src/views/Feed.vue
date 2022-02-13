@@ -30,8 +30,9 @@
                 prepend-icon="mdi-play"
                 inverse-label
                 dark
-                @click="playJam(jam)"
+                @click:prepend="playJam(jam)"
               >
+                <!-- @change="function" -->
               </v-slider>
               <div class="time">00:10 / 03:10</div>
             </div>

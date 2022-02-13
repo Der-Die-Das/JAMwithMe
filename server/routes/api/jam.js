@@ -155,33 +155,40 @@ router.post('/create',
         if (req.files == null ||
             !req.files.thumbnail ||
             !req.files.rawrecording) {
-            res.status(400).send();
+            res.status(400).send("Thumbnail or Recording wasn't sent.");
             return;
         }
         if (req.body.recordinginfos.length < 1) {
-            res.status(400).send();
+            res.status(400).send("No recording infos given.");
             return;
         }
-        const recordingInfos = req.body.recordinginfos;
+        const recordingInfos = JSON.parse(req.body.recordinginfos);
 
-        const thumbnailFileName = uuid.v4() + '.' +
-            req.files.thumbnail.extension;
-        const rawRecordingFileName = uuid.v4() + '.' +
-            req.files.rawRecording.extension;;
+        const splitThumbnailFileName = req.files.thumbnail.name.split('.');
+        const thumbnailFileExtension = "." + splitThumbnailFileName[splitThumbnailFileName.length - 1];
+        const thumbnailFileName = uuid.v4() +
+            thumbnailFileExtension;
+        const splitRawRecordingFileName = req.files.rawrecording.name.split('.');
+        const rawRecordingFileExtension = "." + splitRawRecordingFileName[splitRawRecordingFileName.length - 1];
+        const rawRecordingFileName = uuid.v4() +
+            rawRecordingFileExtension;
 
         const transaction = await sequelize.transaction();
         try {
-            const newJam = await models.jam.create(
+            const newJamCreated = await models.jam.create(
                 {
                     creator: req.user.id,
                     prejam: req.body.preJamID,
-                    thumbnailPath: mediaFolder + thumbnailFileName,
-                    creationDate: new Date()
-                });
-            const newRawRecording = await models.rawrecording.create({
-                recordingpath: mediaFolder + rawRecordingFileName
-            })
-
+                    thumbnailpath: thumbnailFileName,
+                    creationdate: new Date(),
+                    title: req.body.title,
+                    description: req.body.description
+                }, { transaction: transaction });
+            const newJam = newJamCreated.get({ plain: true })
+            const newRawRecordingCreated = await models.rawrecording.create({
+                recordingpath: rawRecordingFileName
+            }, { transaction: transaction });
+            const newRawRecording = newRawRecordingCreated.get({ plain: true })
             let recordingInfoForNewJamFound = false;
             for (let i = 0; i < recordingInfos.length; i++) {
                 const recordingInfo = recordingInfos[i];
@@ -191,10 +198,10 @@ router.post('/create',
                     recordingInfoForNewJamFound = true;
                     recordingInfo.jam = newJam.id;
                     recordingInfo.recording = newRawRecording.id;
-                    await models.recordinginfos.create(recordingInfo);
+                    await models.recordinginfos.create(recordingInfo, { transaction: transaction });
                     continue;
                 }
-                await models.recordinginfos.create(recordingInfo);
+                await models.recordinginfos.create(recordingInfo, { transaction: transaction });
             }
             if (!recordingInfoForNewJamFound)
                 throw 'There was no recordinginfo with no id'
@@ -204,7 +211,8 @@ router.post('/create',
 
             transaction.commit();
         }
-        catch {
+        catch (error) {
+            console.log(error)
             await transaction.rollback();
             res.status(500).send();
         }

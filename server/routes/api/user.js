@@ -49,9 +49,10 @@ router.get('/jams',
     isAuth,
     async (req, res, next) => {
         const userId = req.query.userID;
+
         const allJams = await models.jam.findAll({ where: { creator: userId } })
             .catch(next)
-        const allJamIDs = allJams.map(x => x.id);
+        const allJamIDs = allJams.map(x => x.id).reverse();
         res.status(200).send(allJamIDs);
     }
 );

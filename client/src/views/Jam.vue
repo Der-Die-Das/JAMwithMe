@@ -249,9 +249,10 @@ export default {
   },
 
   async mounted() {
-    await axios.get("user/current").catch(function (error) {
+    const vm = this;
+    axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
-        this.$router.push("/login").catch(() => {});
+        vm.$router.push("/login").catch(() => {});
       }
     });
   },

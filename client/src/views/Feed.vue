@@ -12,6 +12,7 @@
               </div>
               <div class="postUserName">
                 {{ jam.creator }}
+                <span>{{jam.title }}</span>
               </div>
             </div>
           </div>
@@ -32,18 +33,27 @@
                 dark
                 @click:prepend="playJam(jam)"
               >
-                <!-- @change="function" -->
               </v-slider>
               <div class="time">00:10 / 03:10</div>
             </div>
           </div>
+                    <div class="postText">
+
+              {{jam.description}}
+
+            </div>
           <div class="postIcons">
             <i>
               <v-icon @click="likeJam(jam.liked, jam.id)">
                 {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
               </v-icon>
             </i>
-            <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+            <i
+              ><font-awesome-icon
+                @click="showComments(jam)"
+                :icon="['far', 'comment']"
+              />
+            </i>
             <div class="directJam">
               <router-link to="/Jam"
                 ><img src="../assets/icon.jpg" alt="jam"
@@ -53,13 +63,7 @@
           <div class="likeCounter">
             <span>{{ jam.likes }} Likes</span>
           </div>
-          <div class="postText">
-            <p>
-              <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-              amet consectetur adipisicing elit.
-              <span class="hashtag"> #rock</span>
-            </p>
-          </div>
+
           <div class="postComment">
             <div class="postUserPic">
               <img :src="user.profilePicture" alt="ProfilePicture" />
@@ -96,17 +100,20 @@ export default {
         {
           vcomment: "",
           playing: false,
+          showComments: true,
         },
       ],
+
       user: {},
       isLoading: true,
     };
   },
 
   async mounted() {
-    await axios.get("user/current").catch(function (error) {
+    const vm = this;
+    axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
-        this.$router.push("/login").catch(() => {});
+        vm.$router.push("/login").catch(() => {});
       }
     });
     var currentLoggedInUser = (await axios.get("user/current")).data;
@@ -135,7 +142,6 @@ export default {
             creatorResp.data.profilepicturepath
         );
       });
-      // Problem: nur erster Post zeigt Likes an.
       axios.get("jam/likes?jamID=" + this.jams[i].id).then((likesResp) => {
         Vue.set(this.jams[i], "likes", likesResp.data.likeCount);
       });
@@ -174,6 +180,12 @@ export default {
         (jam.vcomment = ""), Vue.delete(jam, "vcomment");
       }
     },
+    showComments(jam) {
+      jam.showComments = !jam.showComments;
+      console.log(jam.showComments);
+      Vue.set(this.jam, "showComments", jam.showComments);
+    },
+
     playJam(jam) {
       const jamIndex = this.jams.indexOf(jam);
       if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {

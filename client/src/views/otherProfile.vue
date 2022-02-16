@@ -8,11 +8,11 @@
         <img :src="creator.creatorPicture" alt="PP" />
       </v-avatar>
     </span>
-    <span class="title"> {{ user.username }}</span>
+    <span class="title"> {{ creator.username }}</span>
     </div>
     <div>
       <div class="profileDescription">
-        <div>{{ user.bio }}</div>
+        <div>{{ creator.bio }}</div>
       </div>
       <div class="posts" v-for="jam in jams" :key="jam.id">
         <div class="post">
@@ -91,7 +91,7 @@ import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
 
 export default {
-  components: { vFooter, vHeader },
+  components: { vFooter, vHeader},
   data() {
     return {
       creator: {},
@@ -101,15 +101,14 @@ export default {
           vcomment: "",
         },
             ],
-      testUser :16,
-      testJamUser: 2,
     };
   },
 
   async mounted() {
-    await axios.get("user/current").catch(function (error) {
+    const vm = this;
+    axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
-        this.$router.push("/login").catch(() => {});
+        vm.$router.push("/login").catch(() => {});
       }
     });
 
@@ -120,8 +119,7 @@ export default {
       "/media/" +
       currentLoggedInUser.profilepicturepath;
       
-
-    await axios.get("user/"+this.testUser).then((creatorResp) => {
+    await axios.get("user/"+this.$route.query.userID).then((creatorResp) => {
       this.creator = creatorResp.data;
 
       Vue.set(
@@ -132,7 +130,7 @@ export default {
     });
 
  this.jams = [];
-    var allJamIds = (await axios.get("jam/all")).data;
+    var allJamIds = (await axios.get("user/jams?userID=" + this.$route.query.userID)).data;
     for (let i = 0; i < allJamIds.length; i++) {
       var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
       this.jams.push(fullJamInfo);

@@ -84,7 +84,7 @@ router.get('/comments',
 router.delete('/delete',
     isAuth,
     async (req, res, next) => {
-        const jamId = req.query.jamID;
+        const jamId = req.body.jamID;
         const jamObject = await models.jam.findOne({
             where: {
                 id: jamId

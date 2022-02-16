@@ -17,6 +17,20 @@ export default {
 
     };
   },
+   async mounted() {
+              const vm = this;
+     var firstMount = true;
+     if (firstMount) {
+           axios.get("user/current").catch(function (error) {
+      if (error.response.status == 401) {
+        vm.$router.push("/login").catch(() => {});
+      }
+      firstMount = false
+    });
+       
+     }
+
+   }
 
 };
 </script>
@@ -102,6 +116,11 @@ header {
   display: flex;
   align-items: center;
   font-weight: 700;
+  font-size: 14px;
+}
+.postUser span{
+  margin-left: 20px;
+  font-weight: 400;
   font-size: 14px;
 }
 .postContent {
@@ -406,15 +425,14 @@ footer span {
 .profileDescription {
   margin-bottom: 20px;
   margin-left: 15px;
-    width: 90%;
+  width: 90%;
 }
 
-.profilePictureHeader{
+.profilePictureHeader {
   margin-bottom: 20px;
 }
-.profilePictureHeader span{
+.profilePictureHeader span {
   margin-left: 15px;
 }
-
 </style>
 

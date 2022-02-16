@@ -44,6 +44,7 @@ import axios from "axios";
 import Vue from "vue";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+
 export default {
   components: { vFooter, vHeader },
   data() {
@@ -59,9 +60,10 @@ export default {
     };
   },
   async mounted() {
-    await axios.get("user/current").catch(function (error) {
+    const vm = this;
+    axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
-        this.$router.push("/login").catch(() => {});
+        vm.$router.push("/login").catch(() => {});
       }
     });
   },
@@ -107,8 +109,7 @@ export default {
       }, time);
     },
     selectUser(id) {
-       console.log(id)
-      this.$router.push("/otherProfile").catch(() => {});
+     this.$router.push({path:'/otherProfile',query: {userID : id}}).catch(() => {});
     },
   },
 };

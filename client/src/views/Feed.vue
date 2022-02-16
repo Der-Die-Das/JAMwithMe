@@ -27,7 +27,7 @@
             <div class="postContentControl">
               <v-slider
                 class="postContentControl"
-                prepend-icon="mdi-play"
+                :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
                 inverse-label
                 dark
                 @click:prepend="playJam(jam)"
@@ -95,6 +95,7 @@ export default {
       jams: [
         {
           vcomment: "",
+          playing: false,
         },
       ],
       user: {},
@@ -141,7 +142,7 @@ export default {
       axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
-
+      this.jams[i].playing = false;
       jamPlayers.loadJam(fullJamInfo);
     }
 
@@ -174,16 +175,20 @@ export default {
       }
     },
     playJam(jam) {
+      const jamIndex = this.jams.indexOf(jam);
       if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
-        console.log("resume");
+        console.log(this.jams[jamIndex])
+        Vue.set(this.jams[jamIndex], "playing", true);
         jamPlayers.resume();
       } else if (!jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
+        Vue.set(this.jams[jamIndex], "playing", false);
         jamPlayers.pause();
-        console.log("pause");
       } else {
+        Vue.set(this.jams[jamIndex], "playing", true);
         jamPlayers.play(jam.id);
-        console.log("play");
       }
+      console.log(this.jams.map((x) => x.playing));
+      console.log(jamIndex);
     },
   },
 };

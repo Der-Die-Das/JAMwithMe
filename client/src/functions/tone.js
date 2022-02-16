@@ -65,7 +65,6 @@ class JamPlayers {
     play(jamId) {
         this.stopAll();
         var jamPlayer = this.jamPlayers.filter(x => x.id == jamId)[0];
-        console.log(jamPlayer);
         for (let i = 0; i < jamPlayer.recordinginfos.length; i++) {
             jamPlayer.players.player(jamPlayer.recordinginfos[i].id).start();
         }

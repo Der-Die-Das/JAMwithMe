@@ -48,7 +48,8 @@ router.post('/logout',
 router.get('/jams',
     isAuth,
     async (req, res, next) => {
-        const allJams = await models.jam.findAll({ where: { creator: req.user.id } })
+        const userId = req.query.userID;
+        const allJams = await models.jam.findAll({ where: { creator: userId } })
             .catch(next)
         const allJamIDs = allJams.map(x => x.id);
         res.status(200).send(allJamIDs);

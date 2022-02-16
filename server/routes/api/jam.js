@@ -207,7 +207,7 @@ router.post('/create',
                 throw 'There was no recordinginfo with no id'
 
             await req.files.thumbnail.mv(mediaFolder + thumbnailFileName);
-            await req.files.thumbnail.mv(mediaFolder + rawRecordingFileName);
+            await req.files.rawrecording.mv(mediaFolder + rawRecordingFileName);
 
             transaction.commit();
         }

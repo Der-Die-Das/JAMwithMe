@@ -2,13 +2,13 @@
   <v-container fluid class="py-0 px-0">
     <vHeader />
     <vFooter />
- <div class="profilePictureHeader">
-    <span  >
-      <v-avatar>
-        <img :src="user.userPicture" alt="PP" />
-      </v-avatar>
-    </span>
-    <span class="title"> {{ user.username }}</span>
+    <div class="profilePictureHeader">
+      <span>
+        <v-avatar>
+          <img :src="user.userPicture" alt="PP" />
+        </v-avatar>
+      </span>
+      <span class="title"> {{ user.username }}</span>
     </div>
     <div>
       <div class="postsSettings">
@@ -95,6 +95,10 @@
             <v-btn @click="logout" block color="secondary" depressed>
               LOG OUT
             </v-btn>
+            <br />
+            <v-btn @click="getOwnJams()" block color="secondary" depressed>
+              {{showJams? "HIDE OWN JAMS" : "SHOW OWN JAMS"}}
+            </v-btn>
           </div>
         </div>
       </div>
@@ -149,6 +153,58 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- Do sött eigentlech am besche en component häre                 -->
+    <div v-if="showJams">
+    <div class="posts" v-for="jam in jams" :key="jam.id">
+      <div class="post">
+        <div class="postHeader">
+          <div class="postUser">
+            <div class="postUserName">
+              {{ jam.title }}
+            </div>
+          </div>
+        </div>
+
+        <div class="postContent">
+          <div></div>
+
+          <img
+            :src="jam.thumbnail"
+            alt="PostImg"
+            onerror="this.src='https://picsum.photos/400/200'"
+          />
+          <v-icon @click="deleteJam(jam.id)" dark class="deleteBtn">
+            {{ "mdi-delete-forever" }}</v-icon
+          >
+          <div class="postContentControl">
+            <v-slider
+              class="postContentControl"
+              :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
+              inverse-label
+              dark
+              @click:prepend="playJam(jam)"
+            >
+            </v-slider>
+            <div class="time">00:10 / 03:10</div>
+          </div>
+        </div>
+      </div>
+      <div class="postText">
+        {{ jam.description }}
+      </div>
+      <div class="postIcons">
+        <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+        <div class="directJam">
+          <router-link to="/Jam"
+            ><img src="../assets/icon.jpg" alt="jam"
+          /></router-link>
+        </div>
+      </div>
+      <div class="likeCounter">
+        <span>{{ jam.likes }} Likes</span>
+      </div>
+    </div>
+    </div>
   </v-container>
 </template>
 
@@ -160,6 +216,13 @@ export default {
   components: { vFooter, vHeader },
   data() {
     return {
+      jams: [
+        {
+          vcomment: "",
+          playing: false,
+          showComments: true,
+        },
+      ],
       userInfo: false,
       user: {},
       passwordErrorDialog: false,
@@ -169,6 +232,7 @@ export default {
       show2: false,
       show3: false,
       passwordCheck: null,
+      showJams: null,
       profile: {
         bio: null,
         userPic: null,
@@ -200,6 +264,31 @@ export default {
         currentLoggedInUser.profilepicturepath;
       this.profile.bio = this.user.bio;
     },
+    async getOwnJams() {
+      this.showJams = !this.showJams;
+      if (this.showJams) {
+        var vm = this;
+              this.jams = [];
+      var allJamIds = (await axios.get("user/jams?userID=" + vm.user.id))
+        .data;
+      for (let i = 0; i < allJamIds.length; i++) {
+        var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
+        vm.jams.push(fullJamInfo);
+        vm.jams[i].vcomment = "";
+        vm.jams[i].thumbnail =
+          axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
+      }
+      }
+
+    },
+    deleteJam(id) {
+      axios.delete("jam/delete", {
+        data: {
+          jamID: id,
+        },
+      });
+    },
+
     handleFileUpload(event) {
       console.log(event);
       this.profile.userPic = event;
@@ -279,6 +368,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.deleteBtn {
+  display: flex;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  z-index: 100;
+  height: 24px;
+}
+</style>
 
 
 

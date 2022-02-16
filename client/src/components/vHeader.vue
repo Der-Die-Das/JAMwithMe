@@ -1,8 +1,10 @@
    <template>
   <div class="headerTop">
     <div class="headerTopLogo">
-      <img src="../assets/logo.png" alt="Logo"
-      >
+<router-link to="/Feed"
+            >
+      <img src="../assets/logo.png" alt="Logo">
+      </router-link>
     </div>
     <div class="headerTopIcons">
       <i>

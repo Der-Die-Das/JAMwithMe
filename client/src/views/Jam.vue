@@ -102,9 +102,10 @@
                 <v-col cols="10">
                   <div class="recordingSettings">
                     <v-slider
-                      v-model="recordingInfos.volume"
+                      v-model="recordingInfos[0].volume"
                       min="-30"
                       max="10"
+                      value="0"
                       thumb-label
                     >
                     </v-slider>
@@ -120,9 +121,10 @@
                 <v-col cols="10">
                   <div class="recordingSettings">
                     <v-slider
-                      v-model="recordingInfos.bass"
+                      v-model="recordingInfos[0].bass"
                       min="-10"
                       max="10"
+                      value="0"
                       thumb-label
                     >
                     </v-slider>
@@ -138,9 +140,10 @@
                 <v-col cols="10">
                   <div class="recordingSettings">
                     <v-slider
-                      v-model="recordingInfos.middle"
+                      v-model="recordingInfos[0].middle"
                       min="-10"
                       max="10"
+                      value="10"
                       thumb-label
                       >>
                     </v-slider>
@@ -156,9 +159,10 @@
                 <v-col cols="10">
                   <div class="recordingSettings">
                     <v-slider
-                      v-model="recordingInfos.treble"
+                      v-model="recordingInfos[0].treble"
                       min="-10"
                       max="10"
+                      value="0"
                       thumb-label
                       >>
                     </v-slider>
@@ -175,12 +179,13 @@
                 <v-col cols="10">
                   <div class="recordingTime">
                     <v-slider
-                      v-model="recordingInfos.pan"
+                      v-model="recordingInfos[0].pan"
                       min="-1"
                       max="1"
+                      value=""
                       step="0.1"
                       thumb-label
-                      >>
+                    >
                     </v-slider>
                   </div>
                 </v-col>
@@ -193,6 +198,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+      <v-btn @click="updateRecordingSettings()"></v-btn>
 
       <div class="recordings"></div>
       <div class="newRecord" @click="handleFileUpload()">
@@ -238,11 +244,11 @@ export default {
       preJamID: null,
       recordingInfos: [
         {
-          volume: "0",
-          pan: "0",
-          bass: "0",
-          middle: "0",
-          treble: "0",
+          volume: 0,
+          bass: 0,
+          middle: 0,
+          treble: 0,
+          pan: 0,
         },
       ],
     };
@@ -308,11 +314,13 @@ export default {
 
       console.log(formData);
       console.log(this.recordingInfos);
-      await axios.post("jam/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios
+        .post("jam/create", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+          this.$router.push("/feed").catch(() => {});
     },
   },
 };

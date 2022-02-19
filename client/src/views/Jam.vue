@@ -6,7 +6,7 @@
       <div class="postsSettings">
         <div class="postSetting">
           <div class="postSettingsHeader">
-            <span class="newTitle">Edit Post</span>
+            <span class="Title">Edit Post</span>
             <span
               style="float: right; margin-right: 10px"
               @click="editPost = false"
@@ -55,11 +55,13 @@
       </div>
     </div>
     <div v-else>
-      <div class="newTitle">new Recording</div>
+      <div class="Title">preJams</div>
       <v-expansion-panels class="recordings">
         <v-expansion-panel>
           <v-expansion-panel-header>
-            <span class="recordingContentHeader">RecordingXX</span>
+            <span class="recordingContentHeader">
+              {{ preJams.title }}
+            </span>
           </v-expansion-panel-header>
 
           <v-expansion-panel-content class="recording">
@@ -198,8 +200,150 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-btn @click="updateRecordingSettings()"></v-btn>
 
+      <div class="Title">new Recording</div>
+      <v-expansion-panels class="recordings">
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            <span class="recordingContentHeader"> Your new Recording </span>
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content class="recording">
+            <div class="recordingContent">
+              <v-row class="mb-5" no-gutters>
+                <v-col cols="2">
+                  <span>Time</span>
+                </v-col>
+                <v-col>
+                  <span class="recordingSettingStartValue">00:12</span></v-col
+                >
+                <v-col cols="10">
+                  <div class="recordingTime">
+                    <v-slider> </v-slider>
+                  </div>
+                </v-col>
+                <v-col>
+                  <span class="recordingSettingEndValue">03:02</span>
+                </v-col>
+
+                <v-col>
+                  <div class="recordingTimeControl">
+                    <span><font-awesome-icon icon="undo" /></span>
+                    <span
+                      ><font-awesome-icon
+                        :icon="['far', 'pause-circle']"
+                        style="color: black"
+                        size="lg"
+                    /></span>
+                    <span
+                      ><font-awesome-icon icon="undo" flip="horizontal"
+                    /></span>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Vol</span>
+                </v-col>
+                <v-col cols="10">
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos[0].volume"
+                      min="-30"
+                      max="10"
+                      value="0"
+                      thumb-label
+                    >
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col> </v-col>
+                <v-col> </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Bass</span>
+                </v-col>
+                <v-col cols="10">
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos[0].bass"
+                      min="-10"
+                      max="10"
+                      value="0"
+                      thumb-label
+                    >
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col> </v-col>
+                <v-col> </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Mid</span>
+                </v-col>
+                <v-col cols="10">
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos[0].middle"
+                      min="-10"
+                      max="10"
+                      value="10"
+                      thumb-label
+                      >>
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col> </v-col>
+                <v-col> </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Treble</span>
+                </v-col>
+                <v-col cols="10">
+                  <div class="recordingSettings">
+                    <v-slider
+                      v-model="recordingInfos[0].treble"
+                      min="-10"
+                      max="10"
+                      value="0"
+                      thumb-label
+                      >>
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col> </v-col>
+                <v-col> </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="2">
+                  <span>Pan</span>
+                </v-col>
+                <v-col><span class="recordingSettingStartValue">L</span></v-col>
+                <v-col cols="10">
+                  <div class="recordingTime">
+                    <v-slider
+                      v-model="recordingInfos[0].pan"
+                      min="-1"
+                      max="1"
+                      value=""
+                      step="0.1"
+                      thumb-label
+                    >
+                    </v-slider>
+                  </div>
+                </v-col>
+                <v-col>
+                  <span class="recordingSettingEndValue">R</span>
+                </v-col>
+                <v-col> </v-col>
+              </v-row>
+            </div>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
       <div class="recordings"></div>
       <div class="newRecord" @click="handleFileUpload()">
         <font-awesome-icon
@@ -238,7 +382,7 @@ export default {
       newCreator: null,
       newTitle: null,
       newDescription: null,
-      preJam: null,
+      preJams: [],
       postImage: null,
       newCreationDate: null,
       preJamID: null,
@@ -261,6 +405,13 @@ export default {
         vm.$router.push("/login").catch(() => {});
       }
     });
+    if (this.$route.query.jamID != null) {
+      axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
+        this.preJams = preJamResp.data;
+        this.recordingInfos = preJamResp.data.recordinginfos;
+        console.log(preJamResp.data.recordinginfos);
+      });
+    }
   },
   methods: {
     checkForm() {
@@ -314,13 +465,12 @@ export default {
 
       console.log(formData);
       console.log(this.recordingInfos);
-      await axios
-        .post("jam/create", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-          this.$router.push("/feed").catch(() => {});
+      await axios.post("jam/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      this.$router.push("/feed").catch(() => {});
     },
   },
 };

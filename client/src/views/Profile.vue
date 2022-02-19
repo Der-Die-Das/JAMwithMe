@@ -97,7 +97,7 @@
             </v-btn>
             <br />
             <v-btn @click="getOwnJams()" block color="secondary" depressed>
-              {{showJams? "HIDE OWN JAMS" : "SHOW OWN JAMS"}}
+              {{ showJams ? "HIDE OWN JAMS" : "SHOW OWN JAMS" }}
             </v-btn>
           </div>
         </div>
@@ -155,55 +155,55 @@
     </v-dialog>
     <!-- Do sött eigentlech am besche en component häre                 -->
     <div v-if="showJams">
-    <div class="posts" v-for="jam in jams" :key="jam.id">
-      <div class="post">
-        <div class="postHeader">
-          <div class="postUser">
-            <div class="postUserName">
-              {{ jam.title }}
+      <div class="posts" v-for="jam in jams" :key="jam.id">
+        <div class="post">
+          <div class="postHeader">
+            <div class="postUser">
+              <div class="postUserName">
+                {{ jam.title }}
+              </div>
+            </div>
+          </div>
+
+          <div class="postContent">
+            <div></div>
+
+            <img
+              :src="jam.thumbnail"
+              alt="PostImg"
+              onerror="this.src='https://picsum.photos/400/200'"
+            />
+            <v-icon @click="deleteJam(jam.id)" dark class="deleteBtn">
+              {{ "mdi-delete-forever" }}</v-icon
+            >
+            <div class="postContentControl">
+              <v-slider
+                class="postContentControl"
+                :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
+                inverse-label
+                dark
+                @click:prepend="playJam(jam)"
+              >
+              </v-slider>
+              <div class="time">00:10 / 03:10</div>
             </div>
           </div>
         </div>
-
-        <div class="postContent">
-          <div></div>
-
-          <img
-            :src="jam.thumbnail"
-            alt="PostImg"
-            onerror="this.src='https://picsum.photos/400/200'"
-          />
-          <v-icon @click="deleteJam(jam.id)" dark class="deleteBtn">
-            {{ "mdi-delete-forever" }}</v-icon
-          >
-          <div class="postContentControl">
-            <v-slider
-              class="postContentControl"
-              :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
-              inverse-label
-              dark
-              @click:prepend="playJam(jam)"
-            >
-            </v-slider>
-            <div class="time">00:10 / 03:10</div>
+        <div class="postText">
+          {{ jam.description }}
+        </div>
+        <div class="postIcons">
+          <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+          <div class="directJam">
+            <router-link to="/Jam"
+              ><img src="../assets/icon.jpg" alt="jam"
+            /></router-link>
           </div>
         </div>
-      </div>
-      <div class="postText">
-        {{ jam.description }}
-      </div>
-      <div class="postIcons">
-        <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
-        <div class="directJam">
-          <router-link to="/Jam"
-            ><img src="../assets/icon.jpg" alt="jam"
-          /></router-link>
+        <div class="likeCounter">
+          <span>{{ jam.likes }} Likes</span>
         </div>
       </div>
-      <div class="likeCounter">
-        <span>{{ jam.likes }} Likes</span>
-      </div>
-    </div>
     </div>
   </v-container>
 </template>
@@ -286,7 +286,7 @@ export default {
         data: {
           jamID: id,
         },
-      });
+      })
     },
 
     handleFileUpload(event) {

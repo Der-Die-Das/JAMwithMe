@@ -12,7 +12,7 @@
               </div>
               <div class="postUserName">
                 {{ jam.creator }}
-                <span>{{jam.title }}</span>
+                <span>{{ jam.title }}</span>
               </div>
             </div>
           </div>
@@ -37,11 +37,9 @@
               <div class="time">00:10 / 03:10</div>
             </div>
           </div>
-                    <div class="postText">
-
-              {{jam.description}}
-
-            </div>
+          <div class="postText">
+            {{ jam.description }}
+          </div>
           <div class="postIcons">
             <i>
               <v-icon @click="likeJam(jam.liked, jam.id)">
@@ -50,18 +48,19 @@
             </i>
             <i
               ><font-awesome-icon
-                @click="showComments(jam)"
+                @click="getComments(jam.showComment= !jam.showComment, jam.id)"
                 :icon="['far', 'comment']"
               />
             </i>
-            <div class="directJam">
-              <router-link to="/Jam"
-                ><img src="../assets/icon.jpg" alt="jam"
-              /></router-link>
+            <div @click="directJam(jam.id)" class="directJam">
+                <img src="../assets/icon.jpg" alt="jam">
             </div>
           </div>
           <div class="likeCounter">
             <span>{{ jam.likes }} Likes</span>
+          </div>
+          <div>
+            <v-comments v-if="jam.showComment" :ID="commentJamID"> </v-comments>
           </div>
 
           <div class="postComment">
@@ -88,19 +87,21 @@ import axios from "axios";
 import Vue from "vue";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+import vComments from "../components/comments.vue";
 import tone from "../functions/tone";
 
 var jamPlayers = new tone.JamPlayers(axios.defaults.baseURL + "media/");
 
 export default {
-  components: { vFooter, vHeader },
+  components: { vFooter, vHeader, vComments },
   data() {
     return {
+      commentJamID: 0,
       jams: [
         {
           vcomment: "",
           playing: false,
-          showComments: true,
+          showComments: false,
         },
       ],
 
@@ -149,6 +150,8 @@ export default {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
       this.jams[i].playing = false;
+      this.jams[i].showComments = false;
+      console.log(this.jams[i].showComments);
       jamPlayers.loadJam(fullJamInfo);
     }
 
@@ -171,6 +174,7 @@ export default {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },
+
     comment(jam) {
       if (jam.vcomment != "") {
         axios.post("comment/create", {
@@ -180,16 +184,27 @@ export default {
         (jam.vcomment = ""), Vue.delete(jam, "vcomment");
       }
     },
-    showComments(jam) {
-      jam.showComments = !jam.showComments;
-      console.log(jam.showComments);
-      Vue.set(this.jam, "showComments", jam.showComments);
+
+    getComments(show, id) {
+      var vm = this;
+      const element = this.jams.filter((x) => x.id == id)[0];
+      const jamIndex = this.jams.indexOf(element);
+      var test = show;
+      this.commentJamID = id;
+      console.log(this.commentJamID);
+      if (test) {
+        Vue.set(vm.jams[jamIndex], "showComments", false);
+        console.log(vm.jams[jamIndex].showComments);
+      } else {
+        Vue.set(vm.jams[jamIndex], "showComments", true);
+        console.log(vm.jams[jamIndex].showComments);
+      }
     },
 
     playJam(jam) {
       const jamIndex = this.jams.indexOf(jam);
       if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
-        console.log(this.jams[jamIndex])
+        console.log(this.jams[jamIndex]);
         Vue.set(this.jams[jamIndex], "playing", true);
         jamPlayers.resume();
       } else if (!jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
@@ -202,6 +217,9 @@ export default {
       console.log(this.jams.map((x) => x.playing));
       console.log(jamIndex);
     },
+        directJam(id) {
+     this.$router.push({path:'/Jam',query: {jamID : id}}).catch(() => {});
+    },
   },
 };
 </script>
@@ -209,4 +227,5 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
+
 

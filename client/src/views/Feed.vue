@@ -2,6 +2,13 @@
   <div style="margin-bottom: 120px">
     <vHeader />
     <vFooter />
+    <v-progress-circular
+      v-if="isLoading"
+      class="defaultProgress"
+      :size="200"
+      color="blue"
+      indeterminate
+    ></v-progress-circular>
     <div v-if="!isLoading">
       <div class="posts" v-for="jam in jams" :key="jam.id">
         <div class="post">
@@ -48,12 +55,14 @@
             </i>
             <i
               ><font-awesome-icon
-                @click="getComments(jam.showComment= !jam.showComment, jam.id)"
+                @click="
+                  getComments((jam.showComment = !jam.showComment), jam.id)
+                "
                 :icon="['far', 'comment']"
               />
             </i>
             <div @click="directJam(jam.id)" class="directJam">
-                <img src="../assets/icon.jpg" alt="jam">
+              <img src="../assets/icon.jpg" alt="jam" />
             </div>
           </div>
           <div class="likeCounter">
@@ -97,6 +106,7 @@ export default {
   data() {
     return {
       commentJamID: 0,
+
       jams: [
         {
           vcomment: "",
@@ -217,8 +227,8 @@ export default {
       console.log(this.jams.map((x) => x.playing));
       console.log(jamIndex);
     },
-        directJam(id) {
-     this.$router.push({path:'/Jam',query: {jamID : id}}).catch(() => {});
+    directJam(id) {
+      this.$router.push({ path: "/Jam", query: { jamID: id } }).catch(() => {});
     },
   },
 };
@@ -226,6 +236,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+
 </style>
 
 

@@ -2,80 +2,89 @@
   <div style="margin-bottom: 120px">
     <vHeader />
     <vFooter />
-    <div class="profilePictureHeader">
-      <span>
-        <v-avatar>
-          <img :src="creator.creatorPicture" alt="PP" />
-        </v-avatar>
-      </span>
-      <span class="title"> {{ creator.username }}</span>
-    </div>
-    <div>
-      <div class="profileDescription">
-        <div>{{ creator.bio }}</div>
+    <v-progress-circular
+      v-if="isLoading"
+      class="progress"
+      :size="200"
+      color="blue"
+      indeterminate
+    ></v-progress-circular>
+    <div v-else>
+      <div class="profilePictureHeader">
+        <span>
+          <v-avatar>
+            <img :src="creator.creatorPicture" alt="PP" />
+          </v-avatar>
+        </span>
+        <span class="title"> {{ creator.username }}</span>
       </div>
-      <div class="posts" v-for="jam in jams" :key="jam.id">
-        <div class="post">
-          <div class="postHeader">
-            <div class="postUser">
-              <div class="postUserName">
-                {{ jam.title }}
+      <div>
+        <div class="profileDescription">
+          <div>{{ creator.bio }}</div>
+        </div>
+        <div class="posts" v-for="jam in jams" :key="jam.id">
+          <div class="post">
+            <div class="postHeader">
+              <div class="postUser">
+                <div class="postUserName">
+                  {{ jam.title }}
+                </div>
+              </div>
+            </div>
+
+            <div class="postContent">
+              <div></div>
+
+              <img
+                :src="jam.thumbnail"
+                alt="PostImg"
+                onerror="this.src='https://picsum.photos/400/200'"
+              />
+              <div class="postContentControl">
+                <v-slider
+                  class="postContentControl"
+                  :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
+                  inverse-label
+                  dark
+                  @click:prepend="playJam(jam)"
+                >
+                </v-slider>
+                <div class="time">00:10 / 03:10</div>
               </div>
             </div>
           </div>
-
-          <div class="postContent">
-            <div></div>
-
-            <img
-              :src="jam.thumbnail"
-              alt="PostImg"
-              onerror="this.src='https://picsum.photos/400/200'"
-            />
-            <div class="postContentControl">
-              <v-slider
-                class="postContentControl"
-                :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
-                inverse-label
-                dark
-                @click:prepend="playJam(jam)"
-              >
-              </v-slider>
-              <div class="time">00:10 / 03:10</div>
+          <div class="postText">
+            {{ jam.description }}
+          </div>
+          <div class="postIcons">
+            <i>
+              <v-icon @click="likeJam(jam.liked, jam.id)">
+                {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
+              </v-icon>
+            </i>
+            <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
+            <div class="directJam">
+              <router-link to="/Jam"
+                ><img src="../assets/icon.jpg" alt="jam"
+              /></router-link>
             </div>
           </div>
-        </div>
-        <div class="postText">
-          {{ jam.description }}
-        </div>
-        <div class="postIcons">
-          <i>
-            <v-icon @click="likeJam(jam.liked, jam.id)">
-              {{ jam.liked ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon>
-          </i>
-          <i><font-awesome-icon :icon="['far', 'comment']" /> </i>
-          <div class="directJam">
-            <router-link to="/Jam"
-              ><img src="../assets/icon.jpg" alt="jam"
-            /></router-link>
-          </div>
-        </div>
-        <div class="likeCounter">
-          <span>{{ jam.likes }} Likes</span>
+          <div class="likeCounter">
+            <span>{{ jam.likes }} Likes</span>
 
-          <div class="postComment">
-            <div class="postUserPic">
-              <img :src="user.profilePicture" alt="ProfilePicture" />
+            <div class="postComment">
+              <div class="postUserPic">
+                <img :src="user.profilePicture" alt="ProfilePicture" />
+              </div>
+              <v-textarea
+                v-model="jam.vcomment"
+                label="Add comment..."
+                rows="1"
+                auto-grow
+                append-icon="mdi-send-circle-outline"
+                @click:append="comment(jam)"
+              ></v-textarea>
             </div>
-            <v-textarea
-              v-model="jam.vcomment"
-              label="Add comment..."
-              rows="1"
-              auto-grow
-              append-icon="mdi-send-circle-outline"
-              @click:append="comment(jam)"
-            ></v-textarea>
           </div>
         </div>
       </div>
@@ -96,6 +105,7 @@ export default {
   components: { vFooter, vHeader },
   data() {
     return {
+      isLoading: true,
       creator: {},
       user: {},
       jams: [
@@ -144,6 +154,7 @@ export default {
       this.jams[i].thumbnail =
         axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
     }
+    this.isLoading = false;
   },
   methods: {
     async likeJam(liked, jamID) {
@@ -191,5 +202,13 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style >
+<style scoped>
+
+.progress{
+    z-index: 100;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+}
 </style>

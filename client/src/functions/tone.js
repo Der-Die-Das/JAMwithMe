@@ -120,7 +120,7 @@ class JamPlayers {
             const equalizer = new Tone.EQ3(recordingInfo.bass,
                 recordingInfo.middle,
                 recordingInfo.treble);
-            const panner = new Tone.Panner(recordingInfo.pan);
+            const panner = new Tone.Panner(recordingInfo.pan).toDestination();
 
             player.connect(equalizer)
             equalizer.connect(panner);
@@ -128,8 +128,8 @@ class JamPlayers {
             lastPlayerNodes.push(panner);
         })
 
-        const outputNode = new Tone.Merge().toDestination();
-        lastPlayerNodes.forEach((x) => x.connect(outputNode));
+        // const outputNode = new Tone.Merge().toDestination();
+        // lastPlayerNodes.forEach((x) => x.connect(outputNode));
         // TODO: Pan not working with merge. what other solution?
     }
 }

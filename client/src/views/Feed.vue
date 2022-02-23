@@ -4,7 +4,7 @@
     <vFooter />
     <v-progress-circular
       v-if="isLoading"
-      class="defaultProgress"
+      class="progress"
       :size="200"
       color="blue"
       indeterminate
@@ -254,8 +254,16 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.progress{
+  z-index: 100;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+
+}
 </style>
+
 
 

@@ -434,5 +434,15 @@ footer span {
 .profilePictureHeader span {
   margin-left: 15px;
 }
+
+.defaultProgress{
+  z-index: 100;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+
+}
+
 </style>
 

@@ -2,45 +2,59 @@
   <div style="margin-bottom: 120px">
     <vHeader />
     <vFooter />
-    <div class="profilePictureHeader">
-    <span  >
-      <v-avatar>
-        <img :src="creator.creatorPicture" alt="PP" />
-      </v-avatar>
-    </span>
-    <span class="title"> {{ creator.username }}</span>
-    </div>
-    <div>
-      <div class="profileDescription">
-        <div>{{ creator.bio }}</div>
+    <v-progress-circular
+      v-if="isLoading"
+      class="progress"
+      :size="200"
+      color="blue"
+      indeterminate
+    ></v-progress-circular>
+    <div v-else>
+      <div class="profilePictureHeader">
+        <span>
+          <v-avatar>
+            <img :src="creator.creatorPicture" alt="PP" />
+          </v-avatar>
+        </span>
+        <span class="title"> {{ creator.username }}</span>
       </div>
-      <div class="posts" v-for="jam in jams" :key="jam.id">
-        <div class="post">
-          <div class="postHeader">
-            <div class="postUser">
-              <div class="postUserPic">
+      <div>
+        <div class="profileDescription">
+          <div>{{ creator.bio }}</div>
+        </div>
+        <div class="posts" v-for="jam in jams" :key="jam.id">
+          <div class="post">
+            <div class="postHeader">
+              <div class="postUser">
+                <div class="postUserName">
+                  {{ jam.title }}
+                </div>
+              </div>
+            </div>
+
+            <div class="postContent">
+              <div></div>
+
+              <img
+                :src="jam.thumbnail"
+                alt="PostImg"
+                onerror="this.src='https://picsum.photos/400/200'"
+              />
+              <div class="postContentControl">
+                <v-slider
+                  class="postContentControl"
+                  :prepend-icon="jam.playing ? 'mdi-pause' : 'mdi-play'"
+                  inverse-label
+                  dark
+                  @click:prepend="playJam(jam)"
+                >
+                </v-slider>
+                <div class="time">00:10 / 03:10</div>
               </div>
             </div>
           </div>
-
-          <div class="postContent">
-            <div></div>
-
-            <img
-              :src="jam.thumbnail"
-              alt="PostImg"
-              onerror="this.src='https://picsum.photos/400/200'"
-            />
-            <div class="postContentControl">
-              <v-slider
-                class="postContentControl"
-                prepend-icon="mdi-play"
-                inverse-label
-                dark
-              >
-              </v-slider>
-              <div class="time">00:10 / 03:10</div>
-            </div>
+          <div class="postText">
+            {{ jam.description }}
           </div>
           <div class="postIcons">
             <i>
@@ -57,26 +71,20 @@
           </div>
           <div class="likeCounter">
             <span>{{ jam.likes }} Likes</span>
-          </div>
-          <div class="postText">
-            <p>
-              <span class="username"> Testbenutzer</span>Lorem ipsum dolor sit
-              amet consectetur adipisicing elit.
-              <span class="hashtag"> #rock</span>
-            </p>
-          </div>
-          <div class="postComment">
-            <div class="postUserPic">
-              <img :src="user.profilePicture" alt="ProfilePicture" />
+
+            <div class="postComment">
+              <div class="postUserPic">
+                <img :src="user.profilePicture" alt="ProfilePicture" />
+              </div>
+              <v-textarea
+                v-model="jam.vcomment"
+                label="Add comment..."
+                rows="1"
+                auto-grow
+                append-icon="mdi-send-circle-outline"
+                @click:append="comment(jam)"
+              ></v-textarea>
             </div>
-            <v-textarea
-              v-model="jam.vcomment"
-              label="Add comment..."
-              rows="1"
-              auto-grow
-              append-icon="mdi-send-circle-outline"
-              @click:append="comment(jam)"
-            ></v-textarea>
           </div>
         </div>
       </div>
@@ -89,18 +97,24 @@ import axios from "axios";
 import Vue from "vue";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+import tone from "../functions/tone";
+
+var jamPlayers = new tone.JamPlayers(axios.defaults.baseURL + "media/");
 
 export default {
-  components: { vFooter, vHeader},
+  components: { vFooter, vHeader },
   data() {
     return {
+      isLoading: true,
       creator: {},
       user: {},
-            jams: [
+      jams: [
         {
           vcomment: "",
+          playing: false,
+          showComments: true,
         },
-            ],
+      ],
     };
   },
 
@@ -112,14 +126,14 @@ export default {
       }
     });
 
-            var currentLoggedInUser = (await axios.get("user/current")).data;
+    var currentLoggedInUser = (await axios.get("user/current")).data;
     this.user = currentLoggedInUser;
     this.user.profilePicture =
       axios.defaults.baseURL +
       "/media/" +
       currentLoggedInUser.profilepicturepath;
-      
-    await axios.get("user/"+this.$route.query.userID).then((creatorResp) => {
+
+    await axios.get("user/" + this.$route.query.userID).then((creatorResp) => {
       this.creator = creatorResp.data;
 
       Vue.set(
@@ -129,8 +143,10 @@ export default {
       );
     });
 
- this.jams = [];
-    var allJamIds = (await axios.get("user/jams?userID=" + this.$route.query.userID)).data;
+    this.jams = [];
+    var allJamIds = (
+      await axios.get("user/jams?userID=" + this.$route.query.userID)
+    ).data;
     for (let i = 0; i < allJamIds.length; i++) {
       var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
       this.jams.push(fullJamInfo);
@@ -138,8 +154,9 @@ export default {
       this.jams[i].thumbnail =
         axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
     }
+    this.isLoading = false;
   },
-methods: {
+  methods: {
     async likeJam(liked, jamID) {
       if (liked) {
         await axios.post("jam/unlike", { jamID });
@@ -155,19 +172,22 @@ methods: {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },
-    // async comment(jamID) {
-    //   const element = this.jams.filter((x) => x.id == jamID)[0];
-    //   const jamIndex = this.jams.indexOf(element);
-    //   if (this.jams[jamIndex].vcomment != "") {
-    //     // console.log(this.jams[jamIndex].vcomment);
-    //     await axios.post("comment/create", {
-    //       jamID,
-    //       comment: this.jams[jamIndex].vcomment,
-    //     });
-    //   }
-    //   this.jams[jamIndex].vcomment = "";
-    //   console.log(this.jams[jamIndex]);
-    // },
+    playJam(jam) {
+      const jamIndex = this.jams.indexOf(jam);
+      if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
+        console.log(this.jams[jamIndex]);
+        Vue.set(this.jams[jamIndex], "playing", true);
+        jamPlayers.resume();
+      } else if (!jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
+        Vue.set(this.jams[jamIndex], "playing", false);
+        jamPlayers.pause();
+      } else {
+        Vue.set(this.jams[jamIndex], "playing", true);
+        jamPlayers.play(jam.id);
+      }
+      console.log(this.jams.map((x) => x.playing));
+      console.log(jamIndex);
+    },
     comment(jam) {
       if (jam.vcomment != "") {
         axios.post("comment/create", {
@@ -179,10 +199,16 @@ methods: {
     },
   },
 };
-
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style >
+<style scoped>
+
+.progress{
+    z-index: 100;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+}
 </style>

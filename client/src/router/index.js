@@ -14,39 +14,42 @@ import otherProfile from '../views/otherProfile.vue'
 Vue.use(VueRouter)
 
 const routes = [
-    {
-      path: '/Feed',
-      name: 'Feed',
-      component: Feed
-    },
-    {
-    path: '/Jam',
+  { path: '*', redirect: '/feed' },
+  {
+    path: '',
+    component: Feed
+  },
+
+  {
+    path: '/feed',
+    name: 'Feed',
+    component: Feed
+  },
+
+  {
+    path: '/jam',
     name: 'Jam',
     component: Jam
   },
-  //   {
-  //   path: '/Post',
-  //   name: 'Post',
-  //   component: Post
-  // },
-    {
-    path: '/Search',
+
+  {
+    path: '/search',
     name: 'Search',
     component: Search
   },
-    {
-    path: '/Login',
+  {
+    path: '/login',
     name: 'Login',
     component: Login
   },
-    {
-    path: '/Register',
+  {
+    path: '/register',
     name: 'Register',
     component: Register
   },
 
-    {
-    path: '/Profile',
+  {
+    path: '/profile',
     name: 'Profile',
     component: Profile
   },
@@ -63,9 +66,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    mode: 'history',
-    base: process.env.BASE_URL,
-    routes
-  })
-  
-  export default router
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
+})
+
+export default router

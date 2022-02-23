@@ -2,6 +2,13 @@
   <div style="margin-bottom: 120px">
     <vHeader />
     <vFooter />
+    <v-progress-circular
+      v-if="isLoading"
+      class="defaultProgress"
+      :size="200"
+      color="blue"
+      indeterminate
+    ></v-progress-circular>
     <div v-if="!isLoading">
       <div class="posts" v-for="jam in jams" :key="jam.id">
         <div class="post">
@@ -53,18 +60,21 @@
             </i>
             <i
               ><font-awesome-icon
-                @click="showComments(jam)"
+                @click="
+                  getComments((jam.showComment = !jam.showComment), jam.id)
+                "
                 :icon="['far', 'comment']"
               />
             </i>
-            <div class="directJam">
-              <router-link to="/Jam"
-                ><img src="../assets/icon.jpg" alt="jam"
-              /></router-link>
+            <div @click="directJam(jam.id)" class="directJam">
+              <img src="../assets/icon.jpg" alt="jam" />
             </div>
           </div>
           <div class="likeCounter">
             <span>{{ jam.likes }} Likes</span>
+          </div>
+          <div>
+            <v-comments v-if="jam.showComment" :ID="commentJamID"> </v-comments>
           </div>
 
           <div class="postComment">
@@ -91,19 +101,22 @@ import axios from "axios";
 import Vue from "vue";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+import vComments from "../components/comments.vue";
 import tone from "../functions/tone";
 
 var jamPlayers = new tone.JamPlayers(axios.defaults.baseURL + "media/");
 
 export default {
-  components: { vFooter, vHeader },
+  components: { vFooter, vHeader, vComments },
   data() {
     return {
+      commentJamID: 0,
+
       jams: [
         {
           vcomment: "",
           playing: false,
-          showComments: true,
+          showComments: false,
           duration: 0,
         },
       ],
@@ -167,6 +180,10 @@ export default {
       axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
+      this.jams[i].playing = false;
+      this.jams[i].showComments = false;
+      console.log(this.jams[i].showComments);
+      jamPlayers.loadJam(fullJamInfo);
     }
 
     this.isLoading = false;
@@ -188,6 +205,7 @@ export default {
         Vue.set(this.jams[jamIndex], "likes", likesResp.data.likeCount);
       });
     },
+
     comment(jam) {
       if (jam.vcomment != "") {
         axios.post("comment/create", {
@@ -212,6 +230,26 @@ export default {
       );
       jamPlayers.playing = true;
     },
+
+    getComments(show, id) {
+      var vm = this;
+      const element = this.jams.filter((x) => x.id == id)[0];
+      const jamIndex = this.jams.indexOf(element);
+      var test = show;
+      this.commentJamID = id;
+      console.log(this.commentJamID);
+      if (test) {
+        Vue.set(vm.jams[jamIndex], "showComments", false);
+        console.log(vm.jams[jamIndex].showComments);
+      } else {
+        Vue.set(vm.jams[jamIndex], "showComments", true);
+        console.log(vm.jams[jamIndex].showComments);
+      }
+    },
+
+    directJam(id) {
+      this.$router.push({ path: "/Jam", query: { jamID: id } }).catch(() => {});
+    },
   },
 };
 </script>
@@ -219,4 +257,5 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
+
 

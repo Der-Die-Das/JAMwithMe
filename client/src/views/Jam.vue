@@ -432,6 +432,7 @@ export default {
       this.preJamsAvailable = true;
       axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
         this.preJams = preJamResp.data;
+        this.preJamID = this.$route.query.jamID;
         this.recordingInfos = preJamResp.data.recordinginfos;
         console.log(preJamResp.data.recordinginfos);
       });

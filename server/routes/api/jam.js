@@ -194,15 +194,16 @@ router.post('/create',
             let recordingInfoForNewJamFound = false;
             for (let i = 0; i < recordingInfos.length; i++) {
                 const recordingInfo = recordingInfos[i];
+                recordingInfo.jam = newJam.id;
                 if (!recordingInfo.id) {
                     if (recordingInfoForNewJamFound)
                         throw 'More than one recordingInfo had no id';
                     recordingInfoForNewJamFound = true;
-                    recordingInfo.jam = newJam.id;
                     recordingInfo.recording = newRawRecording.id;
                     await models.recordinginfos.create(recordingInfo, { transaction: transaction });
                     continue;
                 }
+                delete recordingInfo.id;
                 await models.recordinginfos.create(recordingInfo, { transaction: transaction });
             }
             if (!recordingInfoForNewJamFound)

@@ -12,7 +12,7 @@
               </div>
               <div class="postUserName">
                 {{ jam.creator }}
-                <span>{{jam.title }}</span>
+                <span>{{ jam.title }}</span>
               </div>
             </div>
           </div>
@@ -32,16 +32,19 @@
                 inverse-label
                 dark
                 @click:prepend="playJam(jam)"
+                @change="timeChanged($event, jam)"
               >
               </v-slider>
-              <div class="time">00:10 / 03:10</div>
+              <div class="time">
+                00:10 / {{ ("0" + parseInt(jam.duration / 60)).slice(-2) }}:{{
+                  ("0" + parseInt(jam.duration % 60)).slice(-2)
+                }}
+              </div>
             </div>
           </div>
-                    <div class="postText">
-
-              {{jam.description}}
-
-            </div>
+          <div class="postText">
+            {{ jam.description }}
+          </div>
           <div class="postIcons">
             <i>
               <v-icon @click="likeJam(jam.liked, jam.id)">
@@ -74,7 +77,7 @@
               rows="1"
               auto-grow
               append-icon="mdi-send-circle-outline"
-              @click:append="comment(jam)"
+              @click:append="comment($event, jam)"
             ></v-textarea>
           </div>
         </div>
@@ -101,6 +104,7 @@ export default {
           vcomment: "",
           playing: false,
           showComments: true,
+          duration: 0,
         },
       ],
 
@@ -110,10 +114,9 @@ export default {
   },
 
   async mounted() {
-    const vm = this;
     axios.get("user/current").catch(function (error) {
       if (error.response.status == 401) {
-        vm.$router.push("/login").catch(() => {});
+        this.$router.push("/login").catch(() => {});
       }
     });
     var currentLoggedInUser = (await axios.get("user/current")).data;
@@ -131,6 +134,22 @@ export default {
       this.jams[i].vcomment = "";
       this.jams[i].thumbnail =
         axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
+      this.jams[i].duration = 2730;
+
+      this.jams[i].playing = false;
+      jamPlayers.loadJam(fullJamInfo).then(() => {
+        // this.jams[i].duration = jamPlayers.getDuration(this.jams[i].id);
+        this.$set(
+          this.jams[i],
+          "duration",
+          jamPlayers.getDuration(this.jams[i].id)
+        );
+        // Vue.set(
+        //   this.jams[i],
+        //   "duration",
+        //   jamPlayers.getDuration(this.jams[i].id)
+        // );
+      });
 
       axios.get("user/" + fullJamInfo.creator).then((creatorResp) => {
         Vue.set(this.jams[i], "creator", creatorResp.data.username);
@@ -148,8 +167,6 @@ export default {
       axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
-      this.jams[i].playing = false;
-      jamPlayers.loadJam(fullJamInfo);
     }
 
     this.isLoading = false;
@@ -182,25 +199,18 @@ export default {
     },
     showComments(jam) {
       jam.showComments = !jam.showComments;
-      console.log(jam.showComments);
       Vue.set(this.jam, "showComments", jam.showComments);
     },
 
     playJam(jam) {
-      const jamIndex = this.jams.indexOf(jam);
-      if (jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
-        console.log(this.jams[jamIndex])
-        Vue.set(this.jams[jamIndex], "playing", true);
-        jamPlayers.resume();
-      } else if (!jamPlayers.paused && jamPlayers.currentlyPlaying == jam.id) {
-        Vue.set(this.jams[jamIndex], "playing", false);
-        jamPlayers.pause();
-      } else {
-        Vue.set(this.jams[jamIndex], "playing", true);
-        jamPlayers.play(jam.id);
-      }
-      console.log(this.jams.map((x) => x.playing));
-      console.log(jamIndex);
+      jamPlayers.playOrPause(jam.id);
+    },
+    timeChanged($event, jam) {
+      jamPlayers.setTime(
+        jam.id,
+        (jamPlayers.getDuration(jam.id) * $event) / 100
+      );
+      jamPlayers.playing = true;
     },
   },
 };

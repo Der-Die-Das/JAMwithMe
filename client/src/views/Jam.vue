@@ -73,7 +73,7 @@
                 >
                 <v-col cols="10">
                   <div class="recordingTime">
-                    <v-slider> </v-slider>
+                    <v-slider @change="timeChanged($event)"> </v-slider>
                   </div>
                 </v-col>
                 <v-col>
@@ -88,6 +88,7 @@
                         :icon="['far', 'pause-circle']"
                         style="color: black"
                         size="lg"
+                        @click="playOrPause()"
                     /></span>
                     <span
                       ><font-awesome-icon icon="undo" flip="horizontal"
@@ -106,6 +107,7 @@
                       min="-30"
                       max="10"
                       thumb-label
+                      @change="volChanged($event)"
                     >
                     </v-slider>
                   </div>
@@ -124,6 +126,7 @@
                       min="-10"
                       max="10"
                       thumb-label
+                      @change="bassChanged($event)"
                     >
                     </v-slider>
                   </div>
@@ -142,7 +145,8 @@
                       min="-10"
                       max="10"
                       thumb-label
-                      >>
+                      @change="midChanged($event)"
+                    >
                     </v-slider>
                   </div>
                 </v-col>
@@ -160,7 +164,8 @@
                       min="-10"
                       max="10"
                       thumb-label
-                      >>
+                      @change="trebleChanged($event)"
+                    >
                     </v-slider>
                   </div>
                 </v-col>
@@ -180,7 +185,8 @@
                       max="1"
                       step="0.1"
                       thumb-label
-                      >>
+                      @change="panChanged($event)"
+                    >
                     </v-slider>
                   </div>
                 </v-col>
@@ -219,6 +225,8 @@
 import axios from "axios";
 import vFooter from "../components/vFooter";
 import vHeader from "../components/vHeader";
+import tone from "../functions/tone";
+var jamPlayers = new tone.JamPlayers(axios.defaults.baseURL + "media/");
 export default {
   components: { vFooter, vHeader },
   data() {
@@ -285,12 +293,30 @@ export default {
       // Trigger click on the FileInput
       this.$refs.uploader.click();
     },
-    onFileChanged(e) {
+    async onFileChanged(e) {
       this.rawRecording = e.target.files[0];
       this.handleFileUpload(this.rawRecording);
-      console.log(this.rawRecording);
 
-      // Do whatever you need with the file, liek reading it with FileReader
+      // Do whatever you need with the file, like reading it with FileReader
+      var arrayBuffer = await e.target.files[0].arrayBuffer();
+      const audioContext = new AudioContext();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      jamPlayers.loadJam({
+        id: 1,
+        recordinginfos: [
+          {
+            id: 1,
+            pan: 0,
+            volume: 10,
+            bass: 0,
+            treble: 0,
+            middle: 0,
+            recording_rawrecording: {
+              buffer: audioBuffer,
+            },
+          },
+        ],
+      });
     },
 
     updateRecordingSettings() {
@@ -313,6 +339,39 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       });
+    },
+    playOrPause() {
+      console.log("test");
+      jamPlayers.playOrPause(1);
+    },
+    timeChanged($event) {
+      jamPlayers.setTime(1, (jamPlayers.getDuration(1) * $event) / 100);
+      jamPlayers.playing = true;
+    },
+    volChanged($event) {
+      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
+      currentRecordingInfo[0].volume = $event;
+      jamPlayers.setSettings(1, currentRecordingInfo);
+    },
+    bassChanged($event) {
+      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
+      currentRecordingInfo[0].bass = $event;
+      jamPlayers.setSettings(1, currentRecordingInfo);
+    },
+    midChanged($event) {
+      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
+      currentRecordingInfo[0].middle = $event;
+      jamPlayers.setSettings(1, currentRecordingInfo);
+    },
+    trebleChanged($event) {
+      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
+      currentRecordingInfo[0].treble = $event;
+      jamPlayers.setSettings(1, currentRecordingInfo);
+    },
+    panChanged($event) {
+      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
+      currentRecordingInfo[0].pan = $event;
+      jamPlayers.setSettings(1, currentRecordingInfo);
     },
   },
 };

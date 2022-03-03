@@ -150,6 +150,7 @@ export default {
       jamPlayers.loadJam(fullJamInfo);
       this.jams.push(fullJamInfo);
 
+
       jamPlayers.loadJam(fullJamInfo).then(() => {
         // this.jams[i].duration = jamPlayers.getDuration(this.jams[i].id);
         this.$set(
@@ -182,6 +183,7 @@ export default {
       });
       //this.jams[i].playing = false;
     }
+          console.log(this.jams);
 
     this.isLoading = false;
   },

@@ -2,7 +2,6 @@
   <div>
     <vHeader />
     <vFooter />
-    <v-btn @click="test()">test</v-btn>
     <div v-if="editPost">
       <div class="postsSettings">
         <div class="postSetting">
@@ -65,11 +64,15 @@
     <div v-else>
       <div v-if="preJamsAvailable">
         <div class="Title">preJams</div>
-        <v-expansion-panels class="recordings">
-          <v-expansion-panel>
+        <v-expansion-panels accordion class="recordings" v-model="preJamsPanel">
+          <v-expansion-panel
+            @click="closeNewRecording()"
+            v-for="preJam in preJams"
+            :key="preJam.title"
+          >
             <v-expansion-panel-header>
               <span class="recordingContentHeader">
-                {{ preJams.title }}
+                {{ preJam.title }}
               </span>
             </v-expansion-panel-header>
 
@@ -113,7 +116,7 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="recordingInfos[0].volume"
+                        v-model="preJam.volume"
                         min="-30"
                         max="10"
                         value="0"
@@ -132,7 +135,7 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="recordingInfos[0].bass"
+                        v-model="preJam.bass"
                         min="-10"
                         max="10"
                         value="0"
@@ -151,7 +154,7 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="recordingInfos[0].middle"
+                        v-model="preJam.middle"
                         min="-10"
                         max="10"
                         value="10"
@@ -170,7 +173,7 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="recordingInfos[0].treble"
+                        v-model="preJam.treble"
                         min="-10"
                         max="10"
                         value="0"
@@ -192,7 +195,7 @@
                   <v-col cols="10">
                     <div class="recordingTime">
                       <v-slider
-                        v-model="recordingInfos[0].pan"
+                        v-model="preJam.pan"
                         min="-1"
                         max="1"
                         value=""
@@ -214,8 +217,12 @@
       </div>
 
       <div class="Title">new Recording</div>
-      <v-expansion-panels class="recordings">
-        <v-expansion-panel>
+      <v-expansion-panels
+        accordion
+        class="recordings"
+        v-model="newRecordingPanel"
+      >
+        <v-expansion-panel @click="closePreJams()">
           <v-expansion-panel-header>
             <span class="recordingContentHeader"> Your new Recording </span>
           </v-expansion-panel-header>
@@ -394,6 +401,12 @@ export default {
   components: { vFooter, vHeader },
   data() {
     return {
+          items: [
+      { message: 'Foo' },
+      { message: 'Bar' }
+    ],
+      preJamsPanel: null,
+      newRecordingPanel: null,
       isUpdating: false,
       isSelecting: false,
       editPost: false,
@@ -406,6 +419,7 @@ export default {
       newDescription: null,
       preJams: [],
       preJamsAvailable: false,
+      preJamsCount: 3,
       postImage: null,
       newCreationDate: null,
       preJamID: null,
@@ -428,17 +442,39 @@ export default {
       }
     });
     if (this.$route.query.jamID != null) {
-      console.log();
       this.preJamsAvailable = true;
-      axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
-        this.preJams = preJamResp.data;
-        this.preJamID = this.$route.query.jamID;
-        this.recordingInfos = preJamResp.data.recordinginfos;
-        console.log(preJamResp.data.recordinginfos);
-      });
+
+      this.preJams = [];
+      var fullPreJamInfo = (
+        await axios.get("jam?jamID=" + this.$route.query.jamID)
+      ).data;
+      for (let i = 0; i < fullPreJamInfo.recordinginfos.length; i++) {
+        fullPreJamInfo.recordinginfos[i].title = "preJam" + i;
+        console.log(fullPreJamInfo.recordinginfos[i].title);
+      }
+      this.preJams = fullPreJamInfo.recordinginfos;
+      console.log(this.preJams);
+
+      // axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
+      //   this.preJams = preJamResp.data;
+      //   console.log(preJamResp.data);
+      //   this.preJamID = this.$route.query.jamID;
+      //   this.preJamsCount = preJamResp.data.recordinginfos.length;
+      //   for (let i = 0; i < this.preJamsCount; i++) {
+      //   this.recordingInfos[i] = preJamResp.data.recordinginfos[i];
+      //   console.log(this.recordingInfos[i]);
+      //   }
+      // this.recordingInfos = preJamResp.data.recordinginfos;
     }
   },
   methods: {
+    closePreJams() {
+      this.preJamsPanel = null;
+    },
+    closeNewRecording() {
+      this.newRecordingPanel = null;
+    },
+
     checkForm() {
       if (
         this.newTitle &&
@@ -493,17 +529,9 @@ export default {
       });
     },
 
-    updateRecordingSettings() {
-      console.log(this.recordingInfos);
-    },
-
-    test() {
-      this.recordingInfos.push(this.newRecording);
-      console.log(this.recordingInfos);
-    },
     async postNewJam() {
       this.isUpdating = true;
-      this.recordingInfos.push(this.newRecording);
+      this.preJams.push(this.newRecording);
       let formData = new FormData();
       formData.append("rawrecording", this.rawRecording);
       formData.append("thumbnail", this.postImage);
@@ -511,7 +539,7 @@ export default {
       formData.append("description", this.newDescription);
       if (this.preJamID != null) formData.append("preJamID", this.preJamID);
       // formData.append("recordinginfos", [this.recordingInfos]);
-      formData.append("recordinginfos", JSON.stringify(this.recordingInfos));
+      formData.append("recordinginfos", JSON.stringify(this.preJams));
       await axios.post("jam/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -580,3 +608,4 @@ export default {
   
   
   
+

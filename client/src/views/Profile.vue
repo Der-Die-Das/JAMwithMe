@@ -155,7 +155,7 @@
     </v-dialog>
     <!-- Do sött eigentlech am besche en component häre                 -->
     <div v-if="showJams">
-      <div class="posts" v-for="jam in jams" :key="jam.id">
+      <div class="posts" v-for="(jam,index) in jams" :key="jam.id">
         <div class="post">
           <div class="postHeader">
             <div class="postUser">
@@ -173,7 +173,7 @@
               alt="PostImg"
               onerror="this.src='https://picsum.photos/400/200'"
             />
-            <v-icon @click="deleteJam(jam.id)" dark class="deleteBtn">
+            <v-icon @click="deleteJam(jam.id, index)" dark class="deleteBtn">
               {{ "mdi-delete-forever" }}</v-icon
             >
             <div class="postContentControl">
@@ -281,12 +281,13 @@ export default {
       }
 
     },
-    deleteJam(id) {
+    deleteJam(id, index) {
       axios.delete("jam/delete", {
         data: {
           jamID: id,
         },
       })
+      this.$delete(this.jams,index)
     },
 
     handleFileUpload(event) {

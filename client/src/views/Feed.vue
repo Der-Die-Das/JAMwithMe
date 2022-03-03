@@ -61,7 +61,7 @@
             <i
               ><font-awesome-icon
                 @click="
-                  getComments((jam.showComment = !jam.showComment), jam.id)
+                  jam.showComment = !jam.showComment
                 "
                 :icon="['far', 'comment']"
               />
@@ -74,7 +74,7 @@
             <span>{{ jam.likes }} Likes</span>
           </div>
           <div>
-            <v-comments v-if="jam.showComment" :ID="commentJamID"> </v-comments>
+            <v-comments v-if="jam.showComment" :ID="jam.id"> </v-comments>
           </div>
 
           <div class="postComment">
@@ -87,7 +87,7 @@
               rows="1"
               auto-grow
               append-icon="mdi-send-circle-outline"
-              @click:append="comment($event, jam)"
+              @click:append="comment(jam)"
             ></v-textarea>
           </div>
         </div>
@@ -114,10 +114,6 @@ export default {
 
       jams: [
         {
-          vcomment: "",
-          playing: false,
-          showComments: false,
-          duration: 0,
         },
       ],
 
@@ -143,13 +139,17 @@ export default {
     var allJamIds = (await axios.get("jam/all")).data;
     for (let i = 0; i < allJamIds.length; i++) {
       var fullJamInfo = (await axios.get("jam?jamID=" + allJamIds[i])).data;
-      this.jams.push(fullJamInfo);
-      this.jams[i].vcomment = "";
-      this.jams[i].thumbnail =
-        axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
-      this.jams[i].duration = 2730;
 
-      this.jams[i].playing = false;
+      fullJamInfo.vcomment = "";
+      fullJamInfo.thumbnail =
+        axios.defaults.baseURL + "media/" + fullJamInfo.thumbnailpath;
+      fullJamInfo.duration = 2730;
+
+      fullJamInfo.playing = false;
+      fullJamInfo.showComment = false;
+      jamPlayers.loadJam(fullJamInfo);
+      this.jams.push(fullJamInfo);
+
       jamPlayers.loadJam(fullJamInfo).then(() => {
         // this.jams[i].duration = jamPlayers.getDuration(this.jams[i].id);
         this.$set(
@@ -180,10 +180,7 @@ export default {
       axios.get("jam/liked?jamID=" + this.jams[i].id).then((likedResp) => {
         Vue.set(this.jams[i], "liked", likedResp.data.liked);
       });
-      this.jams[i].playing = false;
-      this.jams[i].showComments = false;
-      console.log(this.jams[i].showComments);
-      jamPlayers.loadJam(fullJamInfo);
+      //this.jams[i].playing = false;
     }
 
     this.isLoading = false;
@@ -222,6 +219,7 @@ export default {
 
     playJam(jam) {
       jamPlayers.playOrPause(jam.id);
+      jam.playing = !jam.playing;
     },
     timeChanged($event, jam) {
       jamPlayers.setTime(
@@ -229,22 +227,6 @@ export default {
         (jamPlayers.getDuration(jam.id) * $event) / 100
       );
       jamPlayers.playing = true;
-    },
-
-    getComments(show, id) {
-      var vm = this;
-      const element = this.jams.filter((x) => x.id == id)[0];
-      const jamIndex = this.jams.indexOf(element);
-      var test = show;
-      this.commentJamID = id;
-      console.log(this.commentJamID);
-      if (test) {
-        Vue.set(vm.jams[jamIndex], "showComments", false);
-        console.log(vm.jams[jamIndex].showComments);
-      } else {
-        Vue.set(vm.jams[jamIndex], "showComments", true);
-        console.log(vm.jams[jamIndex].showComments);
-      }
     },
 
     directJam(id) {
@@ -255,13 +237,12 @@ export default {
 </script>
 
 <style scoped>
-.progress{
+.progress {
   z-index: 100;
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-top: 80px;
-
 }
 </style>
 

@@ -29,33 +29,27 @@ export default {
       postComments: [],
     };
   },
-  watch: {
-    ID: function (newVal) {
-      axios.get("jam/comments?jamID=" + newVal).then((Resp) => {
-        this.postComments = Resp.data;
-        for (let i = 0; i < Resp.data.length; i++) {
-          this.postComments[i] = Resp.data[i];
-        }
-        for (let i = 0; i < this.postComments.length; i++) {
-          axios
-            .get("user/" + this.postComments[i].creator)
-            .then((creatorResp) => {
-              Vue.set(
-                this.postComments[i],
-                "creator",
-                creatorResp.data.username
-              );
-              Vue.set(
-                this.postComments[i],
-                "creatorPicture",
-                axios.defaults.baseURL +
-                  "media/" +
-                  creatorResp.data.profilepicturepath
-              );
-            });
-        }
-      });
-    },
+  async mounted() {
+    axios.get("jam/comments?jamID=" + this.ID).then((Resp) => {
+      this.postComments = Resp.data;
+      for (let i = 0; i < Resp.data.length; i++) {
+        this.postComments[i] = Resp.data[i];
+      }
+      for (let i = 0; i < this.postComments.length; i++) {
+        axios
+          .get("user/" + this.postComments[i].creator)
+          .then((creatorResp) => {
+            Vue.set(this.postComments[i], "creator", creatorResp.data.username);
+            Vue.set(
+              this.postComments[i],
+              "creatorPicture",
+              axios.defaults.baseURL +
+                "media/" +
+                creatorResp.data.profilepicturepath
+            );
+          });
+      }
+    });
   },
 };
 </script>
@@ -79,7 +73,5 @@ export default {
   border-radius: 50%;
   margin-right: 8px;
 }
-
-
 </style>
       

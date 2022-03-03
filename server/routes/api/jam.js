@@ -17,7 +17,8 @@ router.get('/',
                 include: [
                     {
                         model: models.recordinginfos, require: true, as: 'recordinginfos',
-                        include: [{ model: models.rawrecording, required: true, as: 'recording_rawrecording' }]
+                        include: [{ model: models.rawrecording, required: true, as: 'recording_rawrecording' },
+                        { model: models.jam, required: true, as: 'jam_jam' }]
                     },
 
                 ]

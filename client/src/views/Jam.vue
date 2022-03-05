@@ -2,78 +2,243 @@
   <div>
     <vHeader />
     <vFooter />
-    <div v-if="editPost">
-      <div class="postsSettings">
-        <div class="postSetting">
-          <div class="postSettingsHeader">
-            <span class="Title">Edit Post</span>
-            <span
-              style="float: right; margin-right: 10px"
-              @click="editPost = false"
-              >edit Jam</span
-            >
-          </div>
-          <div class="postSettingContent">
-            <form>
-              <v-text-field
-                v-model="newTitle"
-                :counter="10"
-                label="Name"
-                required
-                @change="checkForm()"
-              ></v-text-field>
-              <v-textarea
-                v-model="newDescription"
-                name="input-7-1"
-                label="newDescription"
-                value=""
-                counter="100"
-                auto-grow
-                @change="checkForm()"
-              ></v-textarea>
+    <v-progress-circular
+      v-if="isLoading"
+      class="progress"
+      :size="200"
+      color="blue"
+      indeterminate
+    ></v-progress-circular>
+    <div v-else>
+      <div v-if="editPost">
+        <div class="postsSettings">
+          <div class="postSetting">
+            <div class="postSettingsHeader">
+              <span class="Title">Edit Post</span>
+              <span
+                style="float: right; margin-right: 10px"
+                @click="editPost = false"
+                >edit Jam</span
+              >
+            </div>
+            <div class="postSettingContent">
+              <form>
+                <v-text-field
+                  v-model="newTitle"
+                  :counter="32"
+                  label="Name"
+                  required
+                  @change="checkForm()"
+                ></v-text-field>
+                <v-textarea
+                  v-model="newDescription"
+                  name="input-7-1"
+                  label="newDescription"
+                  value=""
+                  counter="100"
+                  auto-grow
+                  @change="checkForm()"
+                ></v-textarea>
 
-              <v-file-input
-                v-model="postImage"
-                accept="image/*"
-                label="Image"
-                prepend-icon="mdi-image-outline"
-                @change="checkForm()"
-              ></v-file-input>
-              <v-spacer></v-spacer>
-            </form>
-            <v-btn
-              @click="postNewJam()"
-              block
-              color="secondary"
-              :disabled="!form"
-              depressed
-            >
-              Post
-            </v-btn>
-            <v-progress-circular
-              v-if="isUpdating"
-              class="progress"
-              :size="200"
-              color="blue"
-              indeterminate
-            ></v-progress-circular>
+                <v-file-input
+                  v-model="postImage"
+                  accept="image/*"
+                  label="Image"
+                  prepend-icon="mdi-image-outline"
+                  @change="checkForm()"
+                ></v-file-input>
+                <v-spacer></v-spacer>
+              </form>
+              <v-btn
+                @click="postNewJam()"
+                block
+                color="secondary"
+                :disabled="!form"
+                depressed
+              >
+                Post
+              </v-btn>
+              <v-progress-circular
+                v-if="isUpdating"
+                class="progress"
+                :size="200"
+                color="blue"
+                indeterminate
+              ></v-progress-circular>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <div v-if="preJamsAvailable">
-        <div class="Title">preJams</div>
-        <v-expansion-panels accordion class="recordings" v-model="preJamsPanel">
-          <v-expansion-panel
-            @click="closeNewRecording()"
-            v-for="preJam in preJams"
-            :key="preJam.title"
+      <div v-else>
+        <div v-if="preJamsAvailable">
+          <div class="Title">preJams</div>
+          <v-expansion-panels
+            accordion
+            class="recordings"
+            v-model="preJamsPanel"
           >
+            <v-expansion-panel
+              @click="closeNewRecording()"
+              v-for="preJam in preJams"
+              :key="preJam.title"
+            >
+              <v-expansion-panel-header>
+                <span class="recordingContentHeader">
+                  {{ preJam.title }}
+                </span>
+              </v-expansion-panel-header>
+
+              <v-expansion-panel-content class="recording">
+                <div class="recordingContent">
+                  <v-row class="mb-5" no-gutters>
+                    <v-col cols="2">
+                      <span>Time</span>
+                    </v-col>
+                    <v-col>
+                      <span class="recordingSettingStartValue"
+                        >00:12</span
+                      ></v-col
+                    >
+                    <v-col cols="10">
+                      <div class="recordingTime">
+                        <v-slider> </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <span class="recordingSettingEndValue">03:02</span>
+                    </v-col>
+
+                    <v-col>
+                      <div class="recordingTimeControl">
+                        <span><font-awesome-icon icon="undo" /></span>
+                        <span
+                          ><font-awesome-icon
+                            :icon="['far', 'pause-circle']"
+                            style="color: black"
+                            size="lg"
+                        /></span>
+                        <span
+                          ><font-awesome-icon icon="undo" flip="horizontal"
+                        /></span>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="2">
+                      <span>Vol</span>
+                    </v-col>
+                    <v-col cols="10">
+                      <div class="recordingSettings">
+                        <v-slider
+                          v-model="preJam.volume"
+                          min="-30"
+                          max="10"
+                          value="0"
+                          thumb-label
+                        >
+                        </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col> </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="2">
+                      <span>Bass</span>
+                    </v-col>
+                    <v-col cols="10">
+                      <div class="recordingSettings">
+                        <v-slider
+                          v-model="preJam.bass"
+                          min="-10"
+                          max="10"
+                          value="0"
+                          thumb-label
+                        >
+                        </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col> </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="2">
+                      <span>Mid</span>
+                    </v-col>
+                    <v-col cols="10">
+                      <div class="recordingSettings">
+                        <v-slider
+                          v-model="preJam.middle"
+                          min="-10"
+                          max="10"
+                          value="10"
+                          thumb-label
+                          >>
+                        </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col> </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="2">
+                      <span>Treble</span>
+                    </v-col>
+                    <v-col cols="10">
+                      <div class="recordingSettings">
+                        <v-slider
+                          v-model="preJam.treble"
+                          min="-10"
+                          max="10"
+                          value="0"
+                          thumb-label
+                          >>
+                        </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col> </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="2">
+                      <span>Pan</span>
+                    </v-col>
+                    <v-col
+                      ><span class="recordingSettingStartValue">L</span></v-col
+                    >
+                    <v-col cols="10">
+                      <div class="recordingTime">
+                        <v-slider
+                          v-model="preJam.pan"
+                          min="-1"
+                          max="1"
+                          value=""
+                          step="0.1"
+                          thumb-label
+                        >
+                        </v-slider>
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <span class="recordingSettingEndValue">R</span>
+                    </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </div>
+
+        <div class="Title">new Recording</div>
+        <v-expansion-panels
+          accordion
+          class="recordings"
+          v-model="newRecordingPanel"
+        >
+          <v-expansion-panel @click="closePreJams()">
             <v-expansion-panel-header>
-              <span class="recordingContentHeader">
-                {{ preJam.title }}
-              </span>
+              <span class="recordingContentHeader"> Your new Recording </span>
             </v-expansion-panel-header>
 
             <v-expansion-panel-content class="recording">
@@ -87,7 +252,7 @@
                   >
                   <v-col cols="10">
                     <div class="recordingTime">
-                      <v-slider> </v-slider>
+                      <v-slider @change="timeChanged($event)"> </v-slider>
                     </div>
                   </v-col>
                   <v-col>
@@ -102,6 +267,7 @@
                           :icon="['far', 'pause-circle']"
                           style="color: black"
                           size="lg"
+                          @click="playOrPause()"
                       /></span>
                       <span
                         ><font-awesome-icon icon="undo" flip="horizontal"
@@ -116,11 +282,12 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="preJam.volume"
+                        v-model="newRecording.volume"
                         min="-30"
                         max="10"
                         value="0"
                         thumb-label
+                        @change="volChanged($event)"
                       >
                       </v-slider>
                     </div>
@@ -135,11 +302,12 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="preJam.bass"
+                        v-model="newRecording.bass"
                         min="-10"
                         max="10"
                         value="0"
                         thumb-label
+                        @change="bassChanged($event)"
                       >
                       </v-slider>
                     </div>
@@ -154,12 +322,13 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="preJam.middle"
+                        v-model="newRecording.middle"
                         min="-10"
                         max="10"
                         value="10"
                         thumb-label
-                        >>
+                        @change="midChanged($event)"
+                      >
                       </v-slider>
                     </div>
                   </v-col>
@@ -173,12 +342,13 @@
                   <v-col cols="10">
                     <div class="recordingSettings">
                       <v-slider
-                        v-model="preJam.treble"
+                        v-model="newRecording.treble"
                         min="-10"
                         max="10"
                         value="0"
                         thumb-label
-                        >>
+                        @change="trebleChanged($event)"
+                      >
                       </v-slider>
                     </div>
                   </v-col>
@@ -195,12 +365,13 @@
                   <v-col cols="10">
                     <div class="recordingTime">
                       <v-slider
-                        v-model="preJam.pan"
+                        v-model="newRecording.pan"
                         min="-1"
                         max="1"
                         value=""
                         step="0.1"
                         thumb-label
+                        @change="panChanged($event)"
                       >
                       </v-slider>
                     </div>
@@ -214,178 +385,24 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </div>
+        <div class="recordings"></div>
+        <div class="newRecord">
+          <font-awesome-icon
+            @click="handleFileUpload()"
+            :icon="['far', 'folder']"
+            style="color: black"
+            size="2x"
+          />
+          <img src="../assets/record.svg" alt="" />
 
-      <div class="Title">new Recording</div>
-      <v-expansion-panels
-        accordion
-        class="recordings"
-        v-model="newRecordingPanel"
-      >
-        <v-expansion-panel @click="closePreJams()">
-          <v-expansion-panel-header>
-            <span class="recordingContentHeader"> Your new Recording </span>
-          </v-expansion-panel-header>
-
-          <v-expansion-panel-content class="recording">
-            <div class="recordingContent">
-              <v-row class="mb-5" no-gutters>
-                <v-col cols="2">
-                  <span>Time</span>
-                </v-col>
-                <v-col>
-                  <span class="recordingSettingStartValue">00:12</span></v-col
-                >
-                <v-col cols="10">
-                  <div class="recordingTime">
-                    <v-slider @change="timeChanged($event)"> </v-slider>
-                  </div>
-                </v-col>
-                <v-col>
-                  <span class="recordingSettingEndValue">03:02</span>
-                </v-col>
-
-                <v-col>
-                  <div class="recordingTimeControl">
-                    <span><font-awesome-icon icon="undo" /></span>
-                    <span
-                      ><font-awesome-icon
-                        :icon="['far', 'pause-circle']"
-                        style="color: black"
-                        size="lg"
-                        @click="playOrPause()"
-                    /></span>
-                    <span
-                      ><font-awesome-icon icon="undo" flip="horizontal"
-                    /></span>
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <span>Vol</span>
-                </v-col>
-                <v-col cols="10">
-                  <div class="recordingSettings">
-                    <v-slider
-                      v-model="newRecording.volume"
-                      min="-30"
-                      max="10"
-                      value="0"
-                      thumb-label
-                      @change="volChanged($event)"
-                    >
-                    </v-slider>
-                  </div>
-                </v-col>
-                <v-col> </v-col>
-                <v-col> </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <span>Bass</span>
-                </v-col>
-                <v-col cols="10">
-                  <div class="recordingSettings">
-                    <v-slider
-                      v-model="newRecording.bass"
-                      min="-10"
-                      max="10"
-                      value="0"
-                      thumb-label
-                      @change="bassChanged($event)"
-                    >
-                    </v-slider>
-                  </div>
-                </v-col>
-                <v-col> </v-col>
-                <v-col> </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <span>Mid</span>
-                </v-col>
-                <v-col cols="10">
-                  <div class="recordingSettings">
-                    <v-slider
-                      v-model="newRecording.middle"
-                      min="-10"
-                      max="10"
-                      value="10"
-                      thumb-label
-                      @change="midChanged($event)"
-                    >
-                    </v-slider>
-                  </div>
-                </v-col>
-                <v-col> </v-col>
-                <v-col> </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <span>Treble</span>
-                </v-col>
-                <v-col cols="10">
-                  <div class="recordingSettings">
-                    <v-slider
-                      v-model="newRecording.treble"
-                      min="-10"
-                      max="10"
-                      value="0"
-                      thumb-label
-                      @change="trebleChanged($event)"
-                    >
-                    </v-slider>
-                  </div>
-                </v-col>
-                <v-col> </v-col>
-                <v-col> </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <span>Pan</span>
-                </v-col>
-                <v-col><span class="recordingSettingStartValue">L</span></v-col>
-                <v-col cols="10">
-                  <div class="recordingTime">
-                    <v-slider
-                      v-model="newRecording.pan"
-                      min="-1"
-                      max="1"
-                      value=""
-                      step="0.1"
-                      thumb-label
-                      @change="panChanged($event)"
-                    >
-                    </v-slider>
-                  </div>
-                </v-col>
-                <v-col>
-                  <span class="recordingSettingEndValue">R</span>
-                </v-col>
-                <v-col> </v-col>
-              </v-row>
-            </div>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <div class="recordings"></div>
-      <div class="newRecord">
-        <font-awesome-icon
-          @click="handleFileUpload()"
-          :icon="['far', 'folder']"
-          style="color: black"
-          size="2x"
-        />
-        <img src="../assets/record.svg" alt="" />
-
-        <img src="../assets/upload.svg" alt="" @click="editPost = true" />
-        <input
-          ref="uploader"
-          class="d-none"
-          type="file"
-          @change="onFileChanged"
-        />
+          <img src="../assets/upload.svg" alt="" @click="editPost = true" />
+          <input
+            ref="uploader"
+            class="d-none"
+            type="file"
+            @change="onFileChanged"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -401,6 +418,7 @@ export default {
   components: { vFooter, vHeader },
   data() {
     return {
+      isLoading: true,
       items: [{ message: "Foo" }, { message: "Bar" }],
       preJamsPanel: null,
       newRecordingPanel: null,
@@ -416,11 +434,11 @@ export default {
       newDescription: null,
       preJams: [],
       preJamsAvailable: false,
-      preJamsCount: 3,
       postImage: null,
       newCreationDate: null,
       preJamID: null,
       preJamIDs: [],
+      preJamCount: null,
       recordingInfos: [],
       newRecording: {
         volume: 0,
@@ -443,30 +461,19 @@ export default {
       this.preJamsAvailable = true;
 
       this.preJams = [];
+
       var fullPreJamInfo = (
         await axios.get("jam?jamID=" + this.$route.query.jamID)
       ).data;
       fullPreJamInfo.recordinginfos[0].title = fullPreJamInfo.title;
       this.preJamIDs.push(fullPreJamInfo.prejam);
-      // console.log(this.preJamIDs);
-      this.getPreJams();
-
-      // for (let i = 0; i < fullPreJamInfo.recordinginfos.length; i++) {
-      //   fullPreJamInfo.recordinginfos[i].title = "preJam" + i;
-      // }
+      this.preJamCount = fullPreJamInfo.recordinginfos.length;
+      this.getPreJams(this.$route.query.jamID);
       this.preJams = fullPreJamInfo.recordinginfos;
+      this.preJams.reverse();
       this.preJamID = this.$route.query.jamID;
-
-      // axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
-      //   this.preJams = preJamResp.data;
-      //   console.log(preJamResp.data);
-
-      //   this.preJamsCount = preJamResp.data.recordinginfos.length;
-      //   for (let i = 0; i < this.preJamsCount; i++) {
-      //   this.recordingInfos[i] = preJamResp.data.recordinginfos[i];
-      //   console.log(this.recordingInfos[i]);
-      //   }
-      // this.recordingInfos = preJamResp.data.recordinginfos;
+    } else {
+      this.isLoading = false;
     }
   },
   methods: {
@@ -477,43 +484,33 @@ export default {
       this.newRecordingPanel = null;
     },
 
-    getPreJams() {
+    async getPreJams(id) {
       const vm = this;
-      axios
-        .get("jam?jamID=" + vm.preJamIDs[0])
-        .then(function (nextpreJam) {
-          // console.log("test2");
-          console.log(nextpreJam);
-          vm.preJamIDs.push(nextpreJam.data.prejam);
-          // console.log(vm.preJamIDs);
-          var parsedobj = JSON.parse(JSON.stringify(vm.preJamIDs));
-          console.log(parsedobj);
-          //  console.log(parsedobj[0]);
-          if (parsedobj[0] != null) {
-            //  console.log("test3");
-            for (let i = 1; i < parsedobj.length; i++) {
-              //     console.log("test4");
-              console.log(nextpreJam.data.title);
-              vm.preJams[i].title = nextpreJam.data.title;
-              console.log(vm.preJams);
-              vm.preJams.push();
-              console.log(i);
+      var test = id;
+
+      if (vm.preJamCount != 0) {
+        for (let i = 0; i < vm.preJamCount; i++) {
+          console.log(test);
+          await axios.get("jam?jamID=" + test).then(function (nextpreJam) {
+            vm.preJamIDs.unshift(nextpreJam.data.prejam);
+            if (nextpreJam.data.prejam != null) {
+              test = nextpreJam.data.prejam.toString();
             }
-            this.getPreJams();
-          } else {
-            console.log("fault");
-          }
-          console.log("test");
-          // this.getPreJams();
-        })
-        .catch(() => {});
+
+            vm.preJams[i].title = nextpreJam.data.title;
+            vm.preJams.unshift();
+          });
+        }
+      }
+
+      this.isLoading = false;
     },
     checkForm() {
       if (
         this.newTitle &&
         this.newDescription &&
         this.postImage &&
-        this.newTitle.length <= 10 &&
+        this.newTitle.length <= 32 &&
         this.newDescription.length <= 100
       ) {
         this.form = true;

@@ -401,10 +401,7 @@ export default {
   components: { vFooter, vHeader },
   data() {
     return {
-          items: [
-      { message: 'Foo' },
-      { message: 'Bar' }
-    ],
+      items: [{ message: "Foo" }, { message: "Bar" }],
       preJamsPanel: null,
       newRecordingPanel: null,
       isUpdating: false,
@@ -423,6 +420,7 @@ export default {
       postImage: null,
       newCreationDate: null,
       preJamID: null,
+      preJamIDs: [],
       recordingInfos: [],
       newRecording: {
         volume: 0,
@@ -448,17 +446,21 @@ export default {
       var fullPreJamInfo = (
         await axios.get("jam?jamID=" + this.$route.query.jamID)
       ).data;
-      for (let i = 0; i < fullPreJamInfo.recordinginfos.length; i++) {
-        fullPreJamInfo.recordinginfos[i].title = "preJam" + i;
-        console.log(fullPreJamInfo.recordinginfos[i].title);
-      }
+      fullPreJamInfo.recordinginfos[0].title = fullPreJamInfo.title;
+      this.preJamIDs.push(fullPreJamInfo.prejam);
+      // console.log(this.preJamIDs);
+      this.getPreJams();
+
+      // for (let i = 0; i < fullPreJamInfo.recordinginfos.length; i++) {
+      //   fullPreJamInfo.recordinginfos[i].title = "preJam" + i;
+      // }
       this.preJams = fullPreJamInfo.recordinginfos;
-      console.log(this.preJams);
+      this.preJamID = this.$route.query.jamID;
 
       // axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
       //   this.preJams = preJamResp.data;
       //   console.log(preJamResp.data);
-      //   this.preJamID = this.$route.query.jamID;
+
       //   this.preJamsCount = preJamResp.data.recordinginfos.length;
       //   for (let i = 0; i < this.preJamsCount; i++) {
       //   this.recordingInfos[i] = preJamResp.data.recordinginfos[i];
@@ -475,6 +477,37 @@ export default {
       this.newRecordingPanel = null;
     },
 
+    getPreJams() {
+      const vm = this;
+      axios
+        .get("jam?jamID=" + vm.preJamIDs[0])
+        .then(function (nextpreJam) {
+          // console.log("test2");
+          console.log(nextpreJam);
+          vm.preJamIDs.push(nextpreJam.data.prejam);
+          // console.log(vm.preJamIDs);
+          var parsedobj = JSON.parse(JSON.stringify(vm.preJamIDs));
+          console.log(parsedobj);
+          //  console.log(parsedobj[0]);
+          if (parsedobj[0] != null) {
+            //  console.log("test3");
+            for (let i = 1; i < parsedobj.length; i++) {
+              //     console.log("test4");
+              console.log(nextpreJam.data.title);
+              vm.preJams[i].title = nextpreJam.data.title;
+              console.log(vm.preJams);
+              vm.preJams.push();
+              console.log(i);
+            }
+            this.getPreJams();
+          } else {
+            console.log("fault");
+          }
+          console.log("test");
+          // this.getPreJams();
+        })
+        .catch(() => {});
+    },
     checkForm() {
       if (
         this.newTitle &&

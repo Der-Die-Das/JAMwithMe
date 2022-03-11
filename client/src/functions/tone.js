@@ -23,6 +23,7 @@ class JamPlayers {
             }
             );
 
+
             var urlObj = {};
             for (let i = 0; i < jam.recordinginfos.length; i++) {
                 const element = jam.recordinginfos[i];
@@ -30,19 +31,25 @@ class JamPlayers {
             }
             var playersObj = new Tone.Players(urlObj, resolve
             )
-
             var newJamPlayer = {
                 id: jam.id,
                 recordinginfos: jam.recordinginfos,
                 players: playersObj,
                 clock: new Clock(),
-                playing: false
+                playing: false,
+                lastPlayerNodes: []
             }
-            this.jamPlayers.push(newJamPlayer);
+
+            var foundElement = this.jamPlayers.filter(x => x.id == jam.id)[0]
+            var indexOfSamePlayer = this.jamPlayers.indexOf(foundElement);
+            if (indexOfSamePlayer == -1) {
+                this.jamPlayers.push(newJamPlayer);
+            }
+            else {
+                this.jamPlayers[indexOfSamePlayer] = newJamPlayer;
+            }
 
             this.setSettings(jam.id)
-
-            // setTimeout(resolve, 5000);
             resolve();
         });
     }
@@ -104,12 +111,19 @@ class JamPlayers {
         var jamPlayer = this.jamPlayers.filter(x => x.id == jamId)[0];
         return jamPlayer.clock.seconds;
     }
+    isPlaying(jamId) {
+        var jamPlayer = this.jamPlayers.filter(x => x.id == jamId)[0];
+        return jamPlayer.playing;
+    }
 
     setSettings(jamId, recordingInfos = null) {
-        console.log(recordingInfos)
-        var lastPlayerNodes = [];
         var jamPlayer = this.jamPlayers.filter(x => x.id == jamId)[0];
 
+        jamPlayer.lastPlayerNodes.forEach(x => {
+            x.disconnect();
+        })
+
+        jamPlayer.lastPlayerNodes = [];
 
         if (recordingInfos != null)
             jamPlayer.recordinginfos = recordingInfos;
@@ -125,12 +139,8 @@ class JamPlayers {
             player.connect(equalizer)
             equalizer.connect(panner);
 
-            lastPlayerNodes.push(panner);
+            jamPlayer.lastPlayerNodes.push(panner);
         })
-
-        // const outputNode = new Tone.Merge().toDestination();
-        // lastPlayerNodes.forEach((x) => x.connect(outputNode));
-        // TODO: Pan not working with merge. what other solution?
     }
 }
 

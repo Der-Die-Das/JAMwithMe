@@ -96,16 +96,32 @@
                     </v-col>
                     <v-col>
                       <span class="recordingSettingStartValue"
-                        >00:12</span
+                        >{{
+                          ("0" + parseInt(player.position / 60)).slice(-2)
+                        }}:{{
+                          ("0" + parseInt(player.position % 60)).slice(-2)
+                        }}</span
                       ></v-col
                     >
                     <v-col cols="10">
                       <div class="recordingTime">
-                        <v-slider> </v-slider>
+                        <v-slider
+                          @change="timeChanged($event)"
+                          min="0"
+                          :max="player.duration"
+                          :value="player.position"
+                        >
+                        </v-slider>
                       </div>
                     </v-col>
                     <v-col>
-                      <span class="recordingSettingEndValue">03:02</span>
+                      <span class="recordingSettingEndValue"
+                        >{{
+                          ("0" + parseInt(player.duration / 60)).slice(-2)
+                        }}:{{
+                          ("0" + parseInt(player.duration % 60)).slice(-2)
+                        }}</span
+                      >
                     </v-col>
 
                     <v-col>
@@ -113,9 +129,14 @@
                         <span><font-awesome-icon icon="undo" /></span>
                         <span
                           ><font-awesome-icon
-                            :icon="['far', 'pause-circle']"
+                            :icon="
+                              player.playing
+                                ? ['far', 'pause-circle']
+                                : ['far', 'play-circle']
+                            "
                             style="color: black"
                             size="lg"
+                            @click="playOrPause()"
                         /></span>
                         <span
                           ><font-awesome-icon icon="undo" flip="horizontal"
@@ -130,11 +151,12 @@
                     <v-col cols="10">
                       <div class="recordingSettings">
                         <v-slider
-                          v-model="preJam.volume"
+                          v-model="newRecording.volume"
                           min="-30"
                           max="10"
                           value="0"
                           thumb-label
+                          @change="updateSettings()"
                         >
                         </v-slider>
                       </div>
@@ -149,11 +171,12 @@
                     <v-col cols="10">
                       <div class="recordingSettings">
                         <v-slider
-                          v-model="preJam.bass"
+                          v-model="newRecording.bass"
                           min="-10"
                           max="10"
                           value="0"
                           thumb-label
+                          @change="updateSettings()"
                         >
                         </v-slider>
                       </div>
@@ -168,12 +191,13 @@
                     <v-col cols="10">
                       <div class="recordingSettings">
                         <v-slider
-                          v-model="preJam.middle"
+                          v-model="newRecording.middle"
                           min="-10"
                           max="10"
                           value="10"
                           thumb-label
-                          >>
+                          @change="updateSettings()"
+                        >
                         </v-slider>
                       </div>
                     </v-col>
@@ -187,12 +211,13 @@
                     <v-col cols="10">
                       <div class="recordingSettings">
                         <v-slider
-                          v-model="preJam.treble"
+                          v-model="newRecording.treble"
                           min="-10"
                           max="10"
                           value="0"
                           thumb-label
-                          >>
+                          @change="updateSettings()"
+                        >
                         </v-slider>
                       </div>
                     </v-col>
@@ -209,12 +234,13 @@
                     <v-col cols="10">
                       <div class="recordingTime">
                         <v-slider
-                          v-model="preJam.pan"
+                          v-model="newRecording.pan"
                           min="-1"
                           max="1"
                           value=""
                           step="0.1"
                           thumb-label
+                          @change="updateSettings()"
                         >
                         </v-slider>
                       </div>
@@ -248,15 +274,29 @@
                     <span>Time</span>
                   </v-col>
                   <v-col>
-                    <span class="recordingSettingStartValue">00:12</span></v-col
+                    <span class="recordingSettingStartValue"
+                      >{{ ("0" + parseInt(player.position / 60)).slice(-2) }}:{{
+                        ("0" + parseInt(player.position % 60)).slice(-2)
+                      }}</span
+                    ></v-col
                   >
                   <v-col cols="10">
                     <div class="recordingTime">
-                      <v-slider @change="timeChanged($event)"> </v-slider>
+                      <v-slider
+                        @change="timeChanged($event)"
+                        min="0"
+                        :max="player.duration"
+                        :value="player.position"
+                      >
+                      </v-slider>
                     </div>
                   </v-col>
                   <v-col>
-                    <span class="recordingSettingEndValue">03:02</span>
+                    <span class="recordingSettingEndValue"
+                      >{{ ("0" + parseInt(player.duration / 60)).slice(-2) }}:{{
+                        ("0" + parseInt(player.duration % 60)).slice(-2)
+                      }}</span
+                    >
                   </v-col>
 
                   <v-col>
@@ -264,7 +304,11 @@
                       <span><font-awesome-icon icon="undo" /></span>
                       <span
                         ><font-awesome-icon
-                          :icon="['far', 'pause-circle']"
+                          :icon="
+                            player.playing
+                              ? ['far', 'pause-circle']
+                              : ['far', 'play-circle']
+                          "
                           style="color: black"
                           size="lg"
                           @click="playOrPause()"
@@ -287,7 +331,7 @@
                         max="10"
                         value="0"
                         thumb-label
-                        @change="volChanged($event)"
+                        @change="updateSettings()"
                       >
                       </v-slider>
                     </div>
@@ -307,7 +351,7 @@
                         max="10"
                         value="0"
                         thumb-label
-                        @change="bassChanged($event)"
+                        @change="updateSettings()"
                       >
                       </v-slider>
                     </div>
@@ -327,7 +371,7 @@
                         max="10"
                         value="10"
                         thumb-label
-                        @change="midChanged($event)"
+                        @change="updateSettings()"
                       >
                       </v-slider>
                     </div>
@@ -347,7 +391,7 @@
                         max="10"
                         value="0"
                         thumb-label
-                        @change="trebleChanged($event)"
+                        @change="updateSettings()"
                       >
                       </v-slider>
                     </div>
@@ -371,7 +415,7 @@
                         value=""
                         step="0.1"
                         thumb-label
-                        @change="panChanged($event)"
+                        @change="updateSettings()"
                       >
                       </v-slider>
                     </div>
@@ -441,12 +485,21 @@ export default {
       preJamCount: null,
       recordingInfos: [],
       newRecording: {
+        id: 0,
         volume: 0,
         bass: 0,
         middle: 0,
         treble: 0,
         pan: 0,
       },
+      player: {
+        position: 0,
+        duration: 0,
+        playing: false,
+      },
+      mic: {},
+      recorder: {},
+      recording: false,
     };
   },
 
@@ -472,9 +525,34 @@ export default {
       this.preJams = fullPreJamInfo.recordinginfos;
       this.preJams.reverse();
       this.preJamID = this.$route.query.jamID;
+
+      // axios.get("jam?jamID=" + this.$route.query.jamID).then((preJamResp) => {
+      //   this.preJams = preJamResp.data;
+      //   console.log(preJamResp.data);
+
+      //   this.preJamsCount = preJamResp.data.recordinginfos.length;
+      //   for (let i = 0; i < this.preJamsCount; i++) {
+      //   this.recordingInfos[i] = preJamResp.data.recordinginfos[i];
+      //   console.log(this.recordingInfos[i]);
+      //   }
+      // this.recordingInfos = preJamResp.data.recordinginfos;
+      jamPlayers.loadJam({
+        id: 0,
+        recordinginfos: fullPreJamInfo.recordinginfos,
+      });
     } else {
       this.isLoading = false;
     }
+    //update player info
+    setInterval(() => {
+      try {
+        this.player.position = jamPlayers.getPosition(0);
+        this.player.duration = jamPlayers.getDuration(0);
+        this.player.playing = jamPlayers.isPlaying(0);
+      } catch (err) {
+        () => {};
+      }
+    }, 200);
   },
   methods: {
     closePreJams() {
@@ -534,22 +612,30 @@ export default {
       var arrayBuffer = await e.target.files[0].arrayBuffer();
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      jamPlayers.loadJam({
-        id: 1,
-        recordinginfos: [
-          {
-            id: 1,
-            pan: 0,
-            volume: 10,
-            bass: 0,
-            treble: 0,
-            middle: 0,
-            recording_rawrecording: {
-              buffer: audioBuffer,
-            },
-          },
-        ],
-      });
+      this.newRecording = {
+        id: 0,
+        pan: 0,
+        volume: 10,
+        bass: 0,
+        treble: 0,
+        middle: 0,
+        recording_rawrecording: {
+          buffer: audioBuffer,
+        },
+      };
+      if (this.preJamsAvailable) {
+        var recordingInfos = [...jamPlayers.jamPlayers[0].recordinginfos];
+        recordingInfos.push(this.newRecording);
+        jamPlayers.loadJam({
+          id: 0,
+          recordinginfos: recordingInfos,
+        });
+      } else {
+        jamPlayers.loadJam({
+          id: 0,
+          recordinginfos: [this.newRecording],
+        });
+      }
     },
 
     async postNewJam() {
@@ -571,37 +657,79 @@ export default {
       this.isUpdating = false;
     },
     playOrPause() {
-      console.log("test");
-      jamPlayers.playOrPause(1);
+      jamPlayers.playOrPause(0);
     },
     timeChanged($event) {
-      jamPlayers.setTime(1, (jamPlayers.getDuration(1) * $event) / 100);
+      jamPlayers.setTime(0, $event);
       jamPlayers.playing = true;
     },
-    volChanged($event) {
-      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
-      currentRecordingInfo[0].volume = $event;
-      jamPlayers.setSettings(1, currentRecordingInfo);
+    updateRecordingInfos(recordingInfo) {
+      var currentRecordingInfos = jamPlayers.jamPlayers[0].recordinginfos;
+      const element = currentRecordingInfos.filter(
+        (x) => x.id == recordingInfo.id
+      )[0];
+      const index = currentRecordingInfos.indexOf(element);
+      if (index == -1) {
+        currentRecordingInfos.push(recordingInfo);
+      } else {
+        currentRecordingInfos[index] = recordingInfo;
+      }
+      jamPlayers.jamPlayers[0].recordinginfos = currentRecordingInfos;
     },
-    bassChanged($event) {
-      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
-      currentRecordingInfo[0].bass = $event;
-      jamPlayers.setSettings(1, currentRecordingInfo);
+    updateSettings() {
+      this.updateRecordingInfos(this.newRecording);
+      if (this.preJamsAvailable) {
+        this.preJams.forEach((x) => {
+          this.updateRecordingInfos(x);
+        });
+      }
+      var currentRecordingInfos = jamPlayers.jamPlayers[0].recordinginfos;
+
+      jamPlayers.setSettings(0, currentRecordingInfos);
     },
-    midChanged($event) {
-      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
-      currentRecordingInfo[0].middle = $event;
-      jamPlayers.setSettings(1, currentRecordingInfo);
-    },
-    trebleChanged($event) {
-      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
-      currentRecordingInfo[0].treble = $event;
-      jamPlayers.setSettings(1, currentRecordingInfo);
-    },
-    panChanged($event) {
-      var currentRecordingInfo = jamPlayers.jamPlayers[0].recordinginfos;
-      currentRecordingInfo[0].pan = $event;
-      jamPlayers.setSettings(1, currentRecordingInfo);
+    async record() {
+      if (this.recording) {
+        var data = await this.recorder.stop();
+        var blobUrl = URL.createObjectURL(data);
+
+        // let blob = await fetch(blobUrl.substring(5)).then((r) => r.blob());
+        // let fileReader = new FileReader();
+        // let arrayBuffer;
+
+        // fileReader.onloadend = async () => {
+        //   arrayBuffer = fileReader.result;
+        //   console.log(arrayBuffer);
+        //   const audioContext = new AudioContext();
+        //   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        //   console.log(audioBuffer);
+        //   var playerr = new Tone.Player(audioBuffer, () => {
+        //     playerr.start();
+        //   });
+        // };
+        // fileReader.readAsArrayBuffer(blob);
+
+        jamPlayers.loadJam({
+          id: 0,
+          recordinginfos: [
+            {
+              id: 0,
+              pan: 0,
+              volume: 10,
+              bass: 0,
+              treble: 0,
+              middle: 0,
+              recording_rawrecording: {
+                url: blobUrl,
+              },
+            },
+          ],
+        });
+
+        this.recording = false;
+      } else {
+        this.recorder.start();
+        this.recording = true;
+      }
     },
   },
 };

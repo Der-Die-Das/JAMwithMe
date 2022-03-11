@@ -486,17 +486,15 @@ export default {
 
     async getPreJams(id) {
       const vm = this;
-      var test = id;
+      var tempID = id;
 
       if (vm.preJamCount != 0) {
         for (let i = 0; i < vm.preJamCount; i++) {
-          console.log(test);
-          await axios.get("jam?jamID=" + test).then(function (nextpreJam) {
+          await axios.get("jam?jamID=" + tempID).then(function (nextpreJam) {
             vm.preJamIDs.unshift(nextpreJam.data.prejam);
             if (nextpreJam.data.prejam != null) {
-              test = nextpreJam.data.prejam.toString();
+              tempID = nextpreJam.data.prejam.toString();
             }
-
             vm.preJams[i].title = nextpreJam.data.title;
             vm.preJams.unshift();
           });
@@ -520,8 +518,6 @@ export default {
     },
     handleFileUpload() {
       this.isSelecting = true;
-
-      // After obtaining the focus when closing the FilePicker, return the button state to normal
       window.addEventListener(
         "focus",
         () => {
@@ -530,14 +526,11 @@ export default {
         { once: true }
       );
 
-      // Trigger click on the FileInput
       this.$refs.uploader.click();
     },
     async onFileChanged(e) {
       this.rawRecording = e.target.files[0];
       this.handleFileUpload(this.rawRecording);
-
-      // Do whatever you need with the file, like reading it with FileReader
       var arrayBuffer = await e.target.files[0].arrayBuffer();
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -568,7 +561,6 @@ export default {
       formData.append("title", this.newTitle);
       formData.append("description", this.newDescription);
       if (this.preJamID != null) formData.append("preJamID", this.preJamID);
-      // formData.append("recordinginfos", [this.recordingInfos]);
       formData.append("recordinginfos", JSON.stringify(this.preJams));
       await axios.post("jam/create", formData, {
         headers: {

@@ -25,8 +25,6 @@
           </div>
 
           <div class="postContent">
-            <div></div>
-            <!-- <img src="https://picsum.photos/800/401" alt="PostImg" /> -->
             <img
               :src="jam.thumbnail"
               alt="PostImg"
